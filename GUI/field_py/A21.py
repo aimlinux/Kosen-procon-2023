@@ -134,53 +134,67 @@ jin = ["#ffe4e1","#e0ffff"]
 
 N = 61/293
 M = 15-7381/1758
-h = rnd.randint(11, 25)
-w = rnd.randint(11, 25)
-shoku = rnd.randint(2, 6)
+h = 21 # 縦マス  
+w = 21 # 横マス  
+shoku = 6 # 職人の数
 act = [0]*shoku
 bec = [0]*shoku
 jid = [[],[]]
 jon = [0, 0]
 turn = rnd.randint(int(h*w/shoku*N+M), int(h*w/shoku*N+M+25))*2
-ike = rnd.randint((h+w)//8, h*w//20)
-siro = rnd.randint((h+w)//10, h*w//40)
+ike = 82 #池の数
+siro = 39  #城の数
+
 # 職人=10,20+a  池=30  城=400  城壁=100000,200000
-a = [[[0 for i in range(w)] for j in range(h)] for k in range(3)]
-i = 0
+a = [[[0 for i in range(w)] for j in range(h)] for k in range(3)] # ３次元配列でゲームボードの状態を表現
 sh = [[[0 for i in range(2)] for j in range(shoku)]
     for k in range(2)]  # [[0,0]*shoku,[0,0]*shoku]
+
+# 職人aを配置
+sh0_x = [1, 1, 2, 18 ,19, 19] #駒の配置は左上から右下の順番で
+sh0_y = [1, 19, 10, 10, 1, 19]
+i = 0
 while i < shoku:
-    x = rnd.randint(0, w-1)
-    y = rnd.randint(0, h-1)
+    x = sh0_x[i]
+    y = sh0_y[i]
     if a[0][y][x] == 0:
         a[0][y][x] = 10+i
         sh[0][i][0] = x
         sh[0][i][1] = y
         i += 1
+# 職人bを配置
+sh1_x = [7, 10, 10, 10, 10, 13]
+sh1_y = [10, 6, 8, 12, 14, 10]
 i = 0
 while i < shoku:
-    x = rnd.randint(0, w-1)
-    y = rnd.randint(0, h-1)
+    x = sh1_x[i]
+    y = sh1_y[i]
     if a[0][y][x] == 0:
         a[0][y][x] = 20+i
         sh[1][i][0] = x
         sh[1][i][1] = y
         i += 1
+# 池を配置
+ike_x = [0, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 4, 4, 4, 4, 4, 5, 5, 6, 6, 6, 6, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 8, 9, 9, 9, 9, 10, 10, 10, 10, 11, 11, 11, 11, 12, 12, 12, 12, 12, 13, 13, 13, 13, 14, 14, 14, 14, 14, 14, 14, 14, 15, 15, 16, 16, 16, 16, 16, 17, 17, 18, 18, 19, 19, 19, 19, 19, 19, 20]
+ike_y = [10, 7, 8, 9, 11, 12, 13, 7, 13, 6, 14, 4, 6, 10, 14, 16, 6, 14, 3, 4, 5, 8, 12, 15, 16, 17, 1, 2, 18, 19, 1, 6, 10, 14, 19, 1, 7, 13, 19, 0, 7, 13, 20, 1, 7, 13, 19, 1, 6, 10, 14, 19, 1, 2, 18, 19, 3, 4, 5, 8, 12, 15, 16, 17, 6, 14, 4, 6, 10, 14, 16, 6, 14, 7, 13, 7, 8, 9, 11, 12, 13, 10]
 i = 0
 ik = [[0, 0]]*ike
 while i < ike:
-    x = rnd.randint(0, w-1)
-    y = rnd.randint(0, h-1)
+    x = ike_x[i]
+    y = ike_y[i]
     if a[0][y][x] == 0:
         a[0][y][x] = 30
         ik[i][0] = x
         ik[i][1] = y
         i += 1
+# 城を配置
+si_x = [2, 2, 3, 3, 3, 3, 4, 4, 5, 7, 7, 8, 8, 9, 9, 9, 9, 10, 10, 10, 10, 10, 11, 11, 11, 11, 12, 12, 13, 13, 15, 16, 16, 17, 17, 17, 17, 18, 18]
+si_y = [3, 17, 2, 3, 17, 18, 8, 12, 10, 7, 13, 8, 12, 4, 9, 11, 16, 3, 4, 10, 16, 17, 4, 9, 11, 16, 8, 12, 7, 13, 10, 8, 12, 2, 3, 17, 18, 3, 17]
 i = 0
 si = [[0, 0]]*siro
 while i < siro:
-    x = rnd.randint(1, w-2)
-    y = rnd.randint(1, h-2)
+    x = si_x[i]
+    y = si_y[i]
     if a[0][y][x] == 0:
         a[0][y][x] = 400
         si[i][0] = x
@@ -189,16 +203,21 @@ while i < siro:
 
 
 root = tk.Tk()
-root.resizable(False, False)
+root.title("A21")
+root.resizable(False, False) # vウィンドウサイズ変更無効
 cvs = tk.Canvas(width=w_width*w+500, heigh=h_width*h+30, bg="white")
 # cvs.create_text(800,300,text="三目並べDX",fill="navy",font=("Times New Roman",60))
+# 縦のグリッド線を描画
 for i in range(h+1):
     cvs.create_line(10, 10+h_width*i, 10+w_width*w,
                     10+h_width*i, fill="black", width=3)
+# 横のグリッド線を描画
 for i in range(w+1):
     cvs.create_line(10+w_width*i, 10, 10+w_width*i,
                     10+h_width*h, fill="black", width=3)
-id = [[0]*shoku, [0]*shoku]
+
+id = [[0]*shoku, [0]*shoku] # 4 (職人の数) * 2 の二次元配列作成
+
 for i in range(h):
     for j in range(w):
         if a[0][i][j]//10 == 3:
@@ -220,6 +239,7 @@ cvs.lift("s2")
 # fg=cvs.create_rectangle(0,0,500,500,fill="#aaaaff")
 # cvs.lower(fg)
 
+# ボタン作成
 rightt = 10+w_width*w
 wspace = 30
 hspace = 30
@@ -254,7 +274,7 @@ but[8].place(x=rightt+wspace*2+www*3, y=hspace+hhh*2, width=www, heigh=hhh)
 enter = tk.Button(text='確定', bg='gray', command=submit)
 enter.place(x=rightt+wspace*2+www*2, y=hspace+hhh, width=www, height=hhh)
 txt = cvs.create_text(rightt+wspace*2+www*2.5, hspace +
-                    hhh*3.5, text="残りターン数　"+str(turn), font=("", 24))
+                    hhh*3.5, text="残りターン数 "+str(turn), font=("", 24))
 cvs.update()
 cvs.pack()
 root.bind("<Button>", click)

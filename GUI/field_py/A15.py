@@ -134,53 +134,67 @@ jin = ["#ffe4e1","#e0ffff"]
 
 N = 61/293
 M = 15-7381/1758
-h = rnd.randint(11, 25)
-w = rnd.randint(11, 25)
-shoku = rnd.randint(2, 6)
+h = 15 # 縦マス  
+w = 15 # 横マス  
+shoku = 4 # 職人の数
 act = [0]*shoku
 bec = [0]*shoku
 jid = [[],[]]
 jon = [0, 0]
 turn = rnd.randint(int(h*w/shoku*N+M), int(h*w/shoku*N+M+25))*2
-ike = rnd.randint((h+w)//8, h*w//20)
-siro = rnd.randint((h+w)//10, h*w//40)
+ike = 44 #池の数
+siro = 17  #城の数
+
 # 職人=10,20+a  池=30  城=400  城壁=100000,200000
-a = [[[0 for i in range(w)] for j in range(h)] for k in range(3)]
-i = 0
+a = [[[0 for i in range(w)] for j in range(h)] for k in range(3)] # ３次元配列でゲームボードの状態を表現
 sh = [[[0 for i in range(2)] for j in range(shoku)]
     for k in range(2)]  # [[0,0]*shoku,[0,0]*shoku]
+
+# 職人aを配置
+sh0_x = [1, 1, 13, 13] #駒の配置は左上から右下の順番で
+sh0_y = [1, 13, 1, 13]
+i = 0
 while i < shoku:
-    x = rnd.randint(0, w-1)
-    y = rnd.randint(0, h-1)
+    x = sh0_x[i]
+    y = sh0_y[i]
     if a[0][y][x] == 0:
         a[0][y][x] = 10+i
         sh[0][i][0] = x
         sh[0][i][1] = y
         i += 1
+# 職人bを配置
+sh1_x = [5, 7, 7, 9]
+sh1_y = [7, 5, 9, 7]
 i = 0
 while i < shoku:
-    x = rnd.randint(0, w-1)
-    y = rnd.randint(0, h-1)
+    x = sh1_x[i]
+    y = sh1_y[i]
     if a[0][y][x] == 0:
         a[0][y][x] = 20+i
         sh[1][i][0] = x
         sh[1][i][1] = y
         i += 1
+# 池を配置
+ike_x = [0, 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 4, 5, 5, 5, 5, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9, 9, 9, 9, 10, 10, 11, 11, 11, 12, 12, 12, 12, 13, 13, 14, 14]
+ike_y = [6, 8, 5, 9, 2, 5, 9, 12, 5, 7, 9, 4, 10, 1, 2, 3, 11, 12, 13, 0, 14, 3, 11, 0, 14, 1, 2, 3, 11, 12, 13, 4, 10, 5, 7, 9, 2, 5, 9, 12, 5, 9, 6, 8]
 i = 0
 ik = [[0, 0]]*ike
 while i < ike:
-    x = rnd.randint(0, w-1)
-    y = rnd.randint(0, h-1)
+    x = ike_x[i]
+    y = ike_y[i]
     if a[0][y][x] == 0:
         a[0][y][x] = 30
         ik[i][0] = x
         ik[i][1] = y
         i += 1
+# 城を配置
+si_x = [1, 2, 2, 3, 3, 6, 6, 7, 7, 7, 8, 8, 11, 11, 12, 12, 13]
+si_y = [7, 3, 11, 2, 12, 6, 8, 1, 7, 13, 6, 8, 2, 12, 3, 11, 7]
 i = 0
 si = [[0, 0]]*siro
 while i < siro:
-    x = rnd.randint(1, w-2)
-    y = rnd.randint(1, h-2)
+    x = si_x[i]
+    y = si_y[i]
     if a[0][y][x] == 0:
         a[0][y][x] = 400
         si[i][0] = x
@@ -189,16 +203,21 @@ while i < siro:
 
 
 root = tk.Tk()
-root.resizable(False, False)
+root.title("A15")
+root.resizable(False, False) # vウィンドウサイズ変更無効
 cvs = tk.Canvas(width=w_width*w+500, heigh=h_width*h+30, bg="white")
 # cvs.create_text(800,300,text="三目並べDX",fill="navy",font=("Times New Roman",60))
+# 縦のグリッド線を描画
 for i in range(h+1):
     cvs.create_line(10, 10+h_width*i, 10+w_width*w,
                     10+h_width*i, fill="black", width=3)
+# 横のグリッド線を描画
 for i in range(w+1):
     cvs.create_line(10+w_width*i, 10, 10+w_width*i,
                     10+h_width*h, fill="black", width=3)
-id = [[0]*shoku, [0]*shoku]
+
+id = [[0]*shoku, [0]*shoku] # 4 (職人の数) * 2 の二次元配列作成
+
 for i in range(h):
     for j in range(w):
         if a[0][i][j]//10 == 3:
@@ -220,6 +239,7 @@ cvs.lift("s2")
 # fg=cvs.create_rectangle(0,0,500,500,fill="#aaaaff")
 # cvs.lower(fg)
 
+# ボタン作成
 rightt = 10+w_width*w
 wspace = 30
 hspace = 30
@@ -254,7 +274,7 @@ but[8].place(x=rightt+wspace*2+www*3, y=hspace+hhh*2, width=www, heigh=hhh)
 enter = tk.Button(text='確定', bg='gray', command=submit)
 enter.place(x=rightt+wspace*2+www*2, y=hspace+hhh, width=www, height=hhh)
 txt = cvs.create_text(rightt+wspace*2+www*2.5, hspace +
-                    hhh*3.5, text="残りターン数　"+str(turn), font=("", 24))
+                    hhh*3.5, text="残りターン数 "+str(turn), font=("", 24))
 cvs.update()
 cvs.pack()
 root.bind("<Button>", click)

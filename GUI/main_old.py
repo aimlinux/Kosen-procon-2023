@@ -61,31 +61,18 @@ def submit():
                         a[0][ay][ax] += (p+1) * 100000+jon[p]*100
                         jon[p] += 1
                         a[p+1][ay][ax] = jon[p]*10
-                        jid[p] = jid[p] + [cvs.create_rectangle(12+ax*w_width, 12+ay*h_width,9+(
-                            ax+1)*w_width,9+(ay+1)*h_width, fill=tilal[p], width=0)]
-                        
-            elif act[i]==j and j == 3:  # 解体
+                        jid[p] = jid[p] + [cvs.create_rectangle(12+ax*w_width, 12+ay*h_width, 9+(
+                            ax+1)*w_width, 9+(ay+1)*h_width, fill=tilal[p], width=0)]
+
+            elif act[i] == j and j == 3:  # 解体
                 if ax >= 0 and ax < w and ay >= 0 and ay < h and bec[i] % 2 == 1:
                     n = a[0][ay][ax]
-                    #print(jid[p][ n//100 % 1000])
+                    # print(jid[p][ n//100 % 1000])
                     if n//100000 != 0:
                         a[0][ay][ax] = n % 100
-                        #print(jid[p][ n//100 % 1000])
-                        cvs.delete(jid[n//100000-1][ n//100 % 1000])
+                        # print(jid[p][ n//100 % 1000])
+                        cvs.delete(jid[n//100000-1][n//100 % 1000])
                         a[n//100000][ay][ax] = 0
-    aa = np.array(a[p+1])
-    for i in range(np.shape(a)[1]):
-        if aa[i][0] == 0:
-            aa[i][0] = -1
-        if aa[i][-1] == 0:
-            aa[i][-1] = -1
-    for j in range(np.shape(a)[2]):
-        if aa[0][j] == 0:
-            aa[0][j] = -1
-        if aa[-1][j] == 0:
-            aa[-1][j] = -1
-    print(aa)
-    # jinti(p,a,0,1,aa,np.zeros_like(aa),1,1)      
     if turn == 1:
         sys.exit()
     p = 1-p
@@ -93,11 +80,10 @@ def submit():
     takumi = 0
     act = [0]*shoku
     bec = [0]*shoku
-    cvs.itemconfig(txt, text="残りターン数  "+str(turn))
+    cvs.itemconfig(txt, text="残りターン数　"+str(turn))
     cvs.itemconfig(id[p][takumi], fill=color[2])
     bu[0].config(bg=color[p])
     but[0].config(bg="gray")
-
 
 
 def click(e):
@@ -130,7 +116,7 @@ w_width = 40
 w_h = (w_width-h_width)/2
 color = ["red", "blue", "green"]
 tilal = ["#ffaaaa", "#aaaaff"]  # 城壁の色
-jin = ["#ffe4e1","#e0ffff"] 
+jin = ["#ffe4e1", "#e0ffff"]
 
 N = 61/293
 M = 15-7381/1758
@@ -139,7 +125,7 @@ w = rnd.randint(11, 25)
 shoku = rnd.randint(2, 6)
 act = [0]*shoku
 bec = [0]*shoku
-jid = [[],[]]
+jid = [[], []]
 jon = [0, 0]
 turn = rnd.randint(int(h*w/shoku*N+M), int(h*w/shoku*N+M+25))*2
 ike = rnd.randint((h+w)//8, h*w//20)
@@ -148,7 +134,7 @@ siro = rnd.randint((h+w)//10, h*w//40)
 a = [[[0 for i in range(w)] for j in range(h)] for k in range(3)]
 i = 0
 sh = [[[0 for i in range(2)] for j in range(shoku)]
-    for k in range(2)]  # [[0,0]*shoku,[0,0]*shoku]
+      for k in range(2)]  # [[0,0]*shoku,[0,0]*shoku]
 while i < shoku:
     x = rnd.randint(0, w-1)
     y = rnd.randint(0, h-1)
@@ -206,7 +192,7 @@ for i in range(h):
                                  * w_width, 4+(i+1)*h_width, fill="black", width=0)
         if a[0][i][j]//100 == 4:
             cvs.create_rectangle(12+j*w_width, 12+i*h_width, 9+(j+1) *
-                                w_width, 9+(i+1)*h_width, fill="yellow", width=0, tag="400")
+                                 w_width, 9+(i+1)*h_width, fill="yellow", width=0, tag="400")
         if a[0][i][j] % 100//10 == 1:
             id[0][a[0][i][j] % 10] = cvs.create_oval(13+j*w_width+w_h, 13+i*h_width, 7+(
                 j+1)*w_width-w_h, 7+(i+1)*h_width, fill=color[0], width=0, tag="s1")
@@ -254,7 +240,7 @@ but[8].place(x=rightt+wspace*2+www*3, y=hspace+hhh*2, width=www, heigh=hhh)
 enter = tk.Button(text='確定', bg='gray', command=submit)
 enter.place(x=rightt+wspace*2+www*2, y=hspace+hhh, width=www, height=hhh)
 txt = cvs.create_text(rightt+wspace*2+www*2.5, hspace +
-                    hhh*3.5, text="残りターン数　"+str(turn), font=("", 24))
+                      hhh*3.5, text="残りターン数　"+str(turn), font=("", 24))
 cvs.update()
 cvs.pack()
 root.bind("<Button>", click)
