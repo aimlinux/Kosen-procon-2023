@@ -176,7 +176,7 @@ while i < shoku:
         i += 1
 # 池を配置
 ike_x = []
-ike_y = []
+ike_y = [] 
 #print(f"{len(ike_x)} + {len(ike_y)}")
 i = 0
 ik = [[0, 0]]*ike
