@@ -1,7 +1,7 @@
 ## field_py（B25とか）を作る為に、、
 
 print(f"{len(ike_x)} + {len(ike_y)}")
-
+print(f"{len(si_x)} + {len(si_y)}")
 
 133
 136
@@ -12,4 +12,5 @@ print(f"{len(ike_x)} + {len(ike_y)}")
 
 ##  Excelで特定の文字列の総数を数える
 =COUNTIFS(A1:U21,"1")
+##  Sensational!!
 =IF(A2=1,ROW(A2), "")
