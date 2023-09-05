@@ -1,24 +1,36 @@
+#https://qiita.com/masataka46/items/7729a74d8dc15de7b5a8
+#Quick Startを試す
+
+
+import chainer
+import chainer.functions as F
+import chainer.links as L
+import chainerrl
 import gym
+import numpy as np
 
-#CarPoleの読み取りセット
-env = gym.make("CartPole-v1")
+env = gym.make('CartPole-v1')
+env._max_episode_steps = None  # 可視化を無効にする
+print('observation space:', env.observation_space)
+print('action space:', env.action_space)
 
-# ゲームを試行する回数
-num_episodes = 5
+obs = env.reset()
+env.render()
+print('initial observation:', obs)
 
-for episode in range(num_episodes):
-    state = env.reset()  # 環境をリセットして初期状態を取得
-    total_reward = 0
-    
-    while True:
-        env.render()  # ゲーム画面を描画
-        action = env.action_space.sample()  # ランダムなアクションを選択
-        next_state, reward, done, info = env.step(action)  # アクションを実行
-        
-        total_reward += reward
-        
-        if done:
-            print(f"Episode {episode + 1}: Total Reward = {total_reward}")
-            break
+action = env.action_space.sample()
+obs, r, done, info = env.step(action)
+print('next observation:', obs)
+print('reward:', r)
+print('done:', done)
+print('info:', info)
 
-env.close()  # 環境を閉じる
+
+#python train.py
+#observationは4つの要素の配列
+#actionのspaceがDiscrete(2)となってるので、行動は２種類
+#報酬はスカラー。
+
+#env.resetで環境を初期化して初期状態のobservationを得る。
+#env.stepは行動を与えて次の状態のobservation、報酬、などなどを返す。
+#強化学習の1Stepね。
