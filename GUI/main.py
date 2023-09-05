@@ -17,7 +17,6 @@ def action(n):
         else:
             but[bec[takumi]].config(bg=color[p])
 
-
 def bector(n):
     global bec, act, color, p, takumi
     if bec[takumi] != n:
@@ -48,7 +47,7 @@ def submit():
 
             elif act[i] == j and j == 1:  # 移動
                 if ax >= 0 and ax < w and ay >= 0 and ay < h:
-                    if a[0][ay][ax] == 0 or a[0][ay][ax] == 400 or a[0][ay][ax]//100000 == (p+1):
+                    if a[0][ay][ax] == 0 or a[0][ay][ax] == 400 or (a[0][ay][ax]//100000 == (p+1) and a[0][ay][ax]%100//10 != 3):
                         sh[p][i][0] = ax
                         sh[p][i][1] = ay
                         # cvs.lift(id[p][i])
@@ -56,7 +55,7 @@ def submit():
                         a[0][shy][shx] -= (p+1)*10+i
                         cvs.move(id[p][i], (bec[i] % 3-1) *
                                  w_width, (bec[i]//3-1) * h_width)
-                        cvs.lift(id[p][i],jid[p][i])
+                        cvs.lift(id[p][i])
                         
             elif act[i] == j and j == 2:  # 建築
                 if ax >= 0 and ax < w and ay >= 0 and ay < h and bec[i] % 2 == 1:
@@ -67,6 +66,8 @@ def submit():
                         a[p+1][ay][ax] = jon[p]*10
                         jid[p] = jid[p] + [cvs.create_rectangle(12+ax*w_width, 12+ay*h_width,9+(
                             ax+1)*w_width,9+(ay+1)*h_width, fill=tilal[p], width=0)]
+                        cvs.lower(jid[p][i])
+
                         
             elif act[i]==j and j == 3:  # 解体
                 if ax >= 0 and ax < w and ay >= 0 and ay < h and bec[i] % 2 == 1:
@@ -134,8 +135,8 @@ def decj(p,aa):
                 else: a[p+1][i][j] = 0
     b = aa
 
-    print(np.array(aa)) 
-    print(np.array(a[p+1]))
+    # print(np.array(aa)) 
+    # print(np.array(a[p+1]))
 
 
     # for i in range(np.shape(a)[0]):
@@ -202,11 +203,9 @@ def jinti(p,a,ax,ay,aa,area,n):
         for j in range(np.shape(aa)[1]-ax-2):
             if aa[ax+j+1][ay+i] == 0:
                 jinti(p,a,ax+j+1,ay+i,aa,area,n)
+                
         ax=0
     
-
-
-
 
         
 def click(e):
@@ -375,7 +374,7 @@ turn = rnd.randint(int(h*w/shoku*N+M), int(h*w/shoku*N+M+25))*2
 
 root = tk.Tk()
 root.resizable(False, False)
-cvs = tk.Canvas(width=w_width*w+500, heigh=h_width*h+30, bg="white")
+cvs = tk.Canvas(width=w_width*w+500+150, heigh=h_width*h+30+100, bg="white")
 # cvs.create_text(800,300,text="三目並べDX",fill="navy",font=("Times New Roman",60))
 for i in range(h+1):
     cvs.create_line(10, 10+h_width*i, 10+w_width*w,
@@ -388,7 +387,7 @@ for i in range(h):
     for j in range(w):
         if a[0][i][j]//10 == 3:
             cvs.create_rectangle(21+j*w_width, 17+i*h_width, (j+1)
-                                 * w_width, 4+(i+1)*h_width, fill="black", width=0)
+                                 * w_width, 4+(i+1)*h_width, fill="black", width=0, tag="30")
         if a[0][i][j]//100 == 4:
             cvs.create_rectangle(12+j*w_width, 12+i*h_width, 9+(j+1) *
                                  w_width, 9+(i+1)*h_width, fill="yellow", width=0, tag="400")
