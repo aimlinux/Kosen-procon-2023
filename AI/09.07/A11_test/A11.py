@@ -4,125 +4,142 @@ import numpy as np
 import sys
 
 
+
+
+
+
+# 出来るだけclassは使いたくない（self.をつけることが面倒だから）
+# class EnvNMoku:
+#     # これらはあくまでもデフォルト値
+#     def __init__(self, verbose=False, opponent_epsilon=0.3, opponent_agent=None, field_number="A11", n_actions=100):
+#         self.field_number = field_number
+#         self.n_actions = n_actions
+#         self.verbose = verbose
+#         self.opponent_epsilon = opponent_epsilon
+#         self.opponent_agent = opponent_agent
+
+#         # プレイヤーの役割を示す値（0はエージェント、1は相手）
+#         self.PLAYER_AGENT = 0
+#         self.PLAYER_OPPONENT = 1
+        
+
+        
+
 def action(n):
-    # global act, color, p, takumi
-    # if act[takumi] != n:
-    #     bu[act[takumi]].config(bg="white")
-    #     act[takumi] = n
-    #     bu[n].config(bg=color[p])
-    #     if act[takumi] == 0:
-    #         but[bec[takumi]].config(bg="gray")
-    #     elif act[takumi] > 1 and bec[takumi] % 2 == 0:
-    #         but[bec[takumi]].config(bg="gray")
-    #     else:
-    #         but[bec[takumi]].config(bg=color[p])
-    pass
+    global act, color, p, takumi
+    if act[takumi] != n:
+        bu[act[takumi]].config(bg="white")
+        act[takumi] = n
+        bu[n].config(bg=color[p])
+        if act[takumi] == 0:
+            but[bec[takumi]].config(bg="gray")
+        elif act[takumi] > 1 and bec[takumi] % 2 == 0:
+            but[bec[takumi]].config(bg="gray")
+        else:
+            but[bec[takumi]].config(bg=color[p])
 
 
 def bector(n):
-    # global bec, act, color, p, takumi
-    # if bec[takumi] != n:
-    #     but[bec[takumi]].config(bg="white")
-    #     bec[takumi] = n
-    #     if act[takumi] == 0:
-    #         but[n].config(bg="gray")
-    #     elif act[takumi] > 1 and n % 2 == 0:
-    #         but[n].config(bg="gray")
-    #     else:
-    #         but[n].config(bg=color[p])
-    pass
+    global bec, act, color, p, takumi
+    if bec[takumi] != n:
+        but[bec[takumi]].config(bg="white")
+        bec[takumi] = n
+        if act[takumi] == 0:
+            but[n].config(bg="gray")
+        elif act[takumi] > 1 and n % 2 == 0:
+            but[n].config(bg="gray")
+        else:
+            but[n].config(bg=color[p])
 
 
 def submit():
-    # global bec, act, color, p, takumi, turn, w, h, sh, h_width, w_width
-    # cvs.itemconfig("s"+str(p+1), fill=color[p])
-    # bu[act[takumi]].config(bg="white")
-    # but[bec[takumi]].config(bg="white")
-    # for j in kodojun:
-    #     for i in range(shoku):
-    #         shx = sh[p][i][0]
-    #         shy = sh[p][i][1]
-    #         ax = shx+bec[i] % 3-1
-    #         ay = shy+bec[i]//3-1
-    #         if act[i] == 0:  # 滞在
-    #             pass
-    #         elif act[i] == j and j == 1:  # 移動
-    #             if ax >= 0 and ax < w and ay >= 0 and ay < h:
-    #                 if a[0][ay][ax] == 0 or a[0][ay][ax] == 400 or a[0][ay][ax] == (p+1)*100000:
-    #                     sh[p][i][0] = ax
-    #                     sh[p][i][1] = ay
-    #                     # cvs.lift(id[p][i])
-    #                     a[0][ay][ax] += (p+1)*10+i
-    #                     a[0][shy][shx] -= (p+1)*10+i
-    #                     cvs.move(id[p][i], (bec[i] % 3-1) *
-    #                              w_width, (bec[i]//3-1) * h_width)
-    #         elif act[i] == j and j == 2:  # 建築
-    #             if ax >= 0 and ax < w and ay >= 0 and ay < h and bec[i] % 2 == 1:
-    #                 n = a[0][ay][ax]
-    #                 if n//100 == 0 and n/10 % 10 != 2-p:
-    #                     a[0][ay][ax] += (p+1) * 100000+jon[p]*100
-    #                     jon[p] += 1
-    #                     a[p+1][ay][ax] = jon[p]*10
-    #                     jid[p] = jid[p] + [cvs.create_rectangle(12+ax*w_width, 12+ay*h_width,9+(
-    #                         ax+1)*w_width,9+(ay+1)*h_width, fill=tilal[p], width=0)]
+    global bec, act, color, p, takumi, turn, w, h, sh, h_width, w_width
+    cvs.itemconfig("s"+str(p+1), fill=color[p])
+    bu[act[takumi]].config(bg="white")
+    but[bec[takumi]].config(bg="white")
+    for j in kodojun:
+        for i in range(shoku):
+            shx = sh[p][i][0]
+            shy = sh[p][i][1]
+            ax = shx+bec[i] % 3-1
+            ay = shy+bec[i]//3-1
+            if act[i] == 0:  # 滞在
+                pass
+            elif act[i] == j and j == 1:  # 移動
+                if ax >= 0 and ax < w and ay >= 0 and ay < h:
+                    if a[0][ay][ax] == 0 or a[0][ay][ax] == 400 or a[0][ay][ax] == (p+1)*100000:
+                        sh[p][i][0] = ax
+                        sh[p][i][1] = ay
+                        # cvs.lift(id[p][i])
+                        a[0][ay][ax] += (p+1)*10+i
+                        a[0][shy][shx] -= (p+1)*10+i
+                        cvs.move(id[p][i], (bec[i] % 3-1) *
+                                 w_width, (bec[i]//3-1) * h_width)
+            elif act[i] == j and j == 2:  # 建築
+                if ax >= 0 and ax < w and ay >= 0 and ay < h and bec[i] % 2 == 1:
+                    n = a[0][ay][ax]
+                    if n//100 == 0 and n/10 % 10 != 2-p:
+                        a[0][ay][ax] += (p+1) * 100000+jon[p]*100
+                        jon[p] += 1
+                        a[p+1][ay][ax] = jon[p]*10
+                        jid[p] = jid[p] + [cvs.create_rectangle(12+ax*w_width, 12+ay*h_width,9+(
+                            ax+1)*w_width,9+(ay+1)*h_width, fill=tilal[p], width=0)]
                         
-    #         elif act[i]==j and j == 3:  # 解体
-    #             if ax >= 0 and ax < w and ay >= 0 and ay < h and bec[i] % 2 == 1:
-    #                 n = a[0][ay][ax]
-    #                 #print(jid[p][ n//100 % 1000])
-    #                 if n//100000 != 0:
-    #                     a[0][ay][ax] = n % 100
-    #                     #print(jid[p][ n//100 % 1000])
-    #                     cvs.delete(jid[n//100000-1][ n//100 % 1000])
-    #                     a[n//100000][ay][ax] = 0
-    # aa = np.array(a[p+1])
-    # for i in range(np.shape(a)[1]):
-    #     if aa[i][0] == 0:
-    #         aa[i][0] = -1
-    #     if aa[i][-1] == 0:
-    #         aa[i][-1] = -1
-    # for j in range(np.shape(a)[2]):
-    #     if aa[0][j] == 0:
-    #         aa[0][j] = -1
-    #     if aa[-1][j] == 0:
-    #         aa[-1][j] = -1
-    # print(aa)
-    # # jinti(p,a,0,1,aa,np.zeros_like(aa),1,1)      
-    # if turn == 1:
-    #     sys.exit()
-    # p = 1-p
-    # turn -= 1
-    # takumi = 0
-    # act = [0]*shoku
-    # bec = [0]*shoku
-    # cvs.itemconfig(txt, text="残りターン数  "+str(turn))
-    # cvs.itemconfig(id[p][takumi], fill=color[2])
-    # bu[0].config(bg=color[p])
-    # but[0].config(bg="gray")
-    pass
+            elif act[i]==j and j == 3:  # 解体
+                if ax >= 0 and ax < w and ay >= 0 and ay < h and bec[i] % 2 == 1:
+                    n = a[0][ay][ax]
+                    #print(jid[p][ n//100 % 1000])
+                    if n//100000 != 0:
+                        a[0][ay][ax] = n % 100
+                        #print(jid[p][ n//100 % 1000])
+                        cvs.delete(jid[n//100000-1][ n//100 % 1000])
+                        a[n//100000][ay][ax] = 0
+    aa = np.array(a[p+1])
+    for i in range(np.shape(a)[1]):
+        if aa[i][0] == 0:
+            aa[i][0] = -1
+        if aa[i][-1] == 0:
+            aa[i][-1] = -1
+    for j in range(np.shape(a)[2]):
+        if aa[0][j] == 0:
+            aa[0][j] = -1
+        if aa[-1][j] == 0:
+            aa[-1][j] = -1
+    print(aa)
+    # jinti(p,a,0,1,aa,np.zeros_like(aa),1,1)      
+    if turn == 1:
+        sys.exit()
+    p = 1-p
+    turn -= 1
+    takumi = 0
+    act = [0]*shoku
+    bec = [0]*shoku
+    cvs.itemconfig(txt, text="残りターン数  "+str(turn))
+    cvs.itemconfig(id[p][takumi], fill=color[2])
+    bu[0].config(bg=color[p])
+    but[0].config(bg="gray")
 
 
 
 def click(e):
-    # global h_width, w_width, h, w, p, color, takumi
-    # if e.x < w_width*w+10 and e.y < h_width*h+10 and e.x >= 10 and e.y >= 10:
-    #     cx = (e.x-10)//w_width
-    #     cy = (e.y-10)//h_width
-    #     if a[0][cy][cx] % 100//10 == p+1:
-    #         n = a[0][cy][cx] % 10
-    #         cvs.itemconfig("s"+str(p+1), fill=color[p])
-    #         cvs.itemconfig(id[p][n], fill=color[2])
-    #         bu[act[takumi]].config(bg="white")
-    #         but[bec[takumi]].config(bg="white")
-    #         takumi = n
-    #         bu[act[n]].config(bg=color[p])
-    #         if act[takumi] == 0:
-    #             but[bec[takumi]].config(bg="gray")
-    #         elif act[takumi] > 1 and bec[takumi] % 2 == 0:
-    #             but[bec[takumi]].config(bg="gray")
-    #         else:
-    #             but[bec[takumi]].config(bg=color[p])
-    pass
+    global h_width, w_width, h, w, p, color, takumi
+    if e.x < w_width*w+10 and e.y < h_width*h+10 and e.x >= 10 and e.y >= 10:
+        cx = (e.x-10)//w_width
+        cy = (e.y-10)//h_width
+        if a[0][cy][cx] % 100//10 == p+1:
+            n = a[0][cy][cx] % 10
+            cvs.itemconfig("s"+str(p+1), fill=color[p])
+            cvs.itemconfig(id[p][n], fill=color[2])
+            bu[act[takumi]].config(bg="white")
+            but[bec[takumi]].config(bg="white")
+            takumi = n
+            bu[act[n]].config(bg=color[p])
+            if act[takumi] == 0:
+                but[bec[takumi]].config(bg="gray")
+            elif act[takumi] > 1 and bec[takumi] % 2 == 0:
+                but[bec[takumi]].config(bg="gray")
+            else:
+                but[bec[takumi]].config(bg=color[p])
 
 
 p = 0
