@@ -4,8 +4,8 @@ import numpy as np
 import sys
 
 class GameApp:
-    def __init__(self, root):
-        self.root = root
+    def __init__(self):
+        self.root = tk.Tk()
         self.root.title("A11")
         self.root.resizable(False, False)  # ウィンドウサイズ変更無効
 
@@ -16,10 +16,13 @@ class GameApp:
         self.create_canvas()
 
         # ボタンの作成
-        self.create_buttons()
+        #self.create_buttons()
 
         # イベントの設定
         self.root.bind("<Button>", self.click)
+        
+        
+        self.root.mainloop()
 
     def initialize_game(self):
         # ゲームの初期設定をここで行う
@@ -31,6 +34,11 @@ class GameApp:
 
     def create_canvas(self):
         # キャンバスの作成と初期設定
+        
+        # self.root = tk.Tk()
+        # self.root.title("A11")
+        # self.root.resizable(False, False) # vウィンドウサイズ変更無効
+        
         self.h_width = 28
         self.w_width = 40
         self.w_h = (self.w_width - self.h_width) / 2
@@ -153,8 +161,8 @@ class GameApp:
                 
                 
 
-    def create_buttons(self):
-        # ボタンの作成と初期設定
+    # def create_buttons(self):
+    #     # ボタンの作成と初期設定
         rightt = 10 + self.w_width * self.w
         wspace = 30
         hspace = 30
@@ -191,6 +199,7 @@ class GameApp:
         self.enter.place(x=rightt + wspace * 2 + www * 2, y=hspace + hhh, width=www, height=hhh)
         self.txt = self.cvs.create_text(rightt + wspace * 2 + www * 2.5, hspace + hhh * 3.5, text="残りターン数 " + str(self.turn), font=("", 24))
 
+
     def action(self, n):
         # action 関数のコードをここに移動
         pass
@@ -206,8 +215,3 @@ class GameApp:
     def click(self, e):
         # click 関数のコードをここに移動
         pass
-
-if __name__ == "__main__":
-    root = tk.Tk()
-    app = GameApp(root)
-    root.mainloop()

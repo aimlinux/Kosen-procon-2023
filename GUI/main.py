@@ -66,7 +66,7 @@ def submit():
                         a[p+1][ay][ax] = jon[p]*10
                         jid[p] = jid[p] + [cvs.create_rectangle(12+ax*w_width, 12+ay*h_width,9+(
                             ax+1)*w_width,9+(ay+1)*h_width, fill=tilal[p], width=0)]
-                        cvs.lower(jid[p][i])
+                        cvs.lower(jid[p][jon[p]-1])
 
                         
             elif act[i]==j and j == 3:  # 解体
@@ -120,6 +120,7 @@ def submit():
 def decj(p,aa):
     global a, point, b
     point[p] = 0
+    print(np.array(a[0]))
     for i in range(np.shape(aa)[0]):
         for j in range(np.shape(aa)[1]):
             if aa[i][j] == 0:
@@ -130,7 +131,7 @@ def decj(p,aa):
                     if a[0][i][j]//100%10 == 4:point[p] += 130
                     else:point[p] += 30
                 elif b[i][j] == -1:
-                    if a[0][i][j] == 400: point[p] +=100
+                    if a[0][i][j]//100%10 == 4: point[p] +=130
                     else:point[p] += 30            
                 else: a[p+1][i][j] = 0
     b = aa
@@ -203,9 +204,12 @@ def jinti(p,a,ax,ay,aa,area,n):
         for j in range(np.shape(aa)[1]-ax-2):
             if aa[ax+j+1][ay+i] == 0:
                 jinti(p,a,ax+j+1,ay+i,aa,area,n)
+                # print(np.array(aa))
+                # return 0
                 
         ax=0
     
+
 
         
 def click(e):
@@ -446,5 +450,5 @@ point2 = cvs.create_text(rightt+wspace*2+www*2.5, hspace +
                       hhh*5.5, text="player2  "+str(point[1]), font=("", 24),fill="blue")
 cvs.update()
 cvs.pack()
-root.bind("<Button>", click)
+root.bind("<Button-3>", click)
 root.mainloop()
