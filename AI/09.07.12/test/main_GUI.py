@@ -67,7 +67,7 @@ class App_GUI:
                             a[0][shy][shx] -= (p+1)*10+i
                             cvs.move(id[p][i], (bec[i] % 3-1) *
                                     w_width, (bec[i]//3-1) * h_width)
-                            cvs.lift(id[p][i])
+                            cvs.lift(id[p][i]) 
                             
                 elif self.act[i] == j and j == 2:  # 建築
                     if ax >= 0 and ax < w and ay >= 0 and ay < h and bec[i] % 2 == 1:
