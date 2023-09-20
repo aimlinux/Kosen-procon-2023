@@ -4,247 +4,17 @@ import numpy as np
 import sys
 
 
-def action(n):
-    pass
-def bector(n):
-    pass
-def submit():
-    pass
-def click(e):
-    pass
 
-class App_GUI:
+class App_GUI(tk.Frame):
+    def __init__(self, master=None):
+        super().__init__(master)
+        self.master = master
+        self.pack()
+        
+        self.f = field_info
+        
+        self.start()
     
-
-    def action(self, n):
-        #global act, color, p, takumi,a
-        if self.act[self.takumi] != n:
-            self.bu[self.act[self.takumi]].config(bg="white")
-            self.act[self.takumi] = n
-            self.bu[n].config(bg=color[p])
-            if self.act[self.takumi] == 0:
-                but[bec[self.takumi]].config(bg="gray")
-            elif self.act[self.takumi] > 1 and bec[self.takumi] % 2 == 0:
-                but[bec[self.takumi]].config(bg="gray")
-            else:
-                but[bec[self.takumi]].config(bg=color[p])
-
-    def bector(self, n):
-        global bec, self.act, color, p, takumi
-        if bec[self.takumi] != n:
-            but[bec[self.takumi]].config(bg="white")
-            bec[self.takumi] = n
-            if self.act[self.takumi] == 0:
-                but[n].config(bg="gray")
-            elif self.act[self.takumi] > 1 and n % 2 == 0:
-                but[n].config(bg="gray")
-            else:
-                but[n].config(bg=color[p])
-
-
-    def submit(self):
-        global bec, self.act, color, p, takumi, turn, w, h, sh, h_width, w_width,area
-        cvs.itemconfig("s"+str(p+1), fill=color[p])
-        bu[self.act[takumi]].config(bg="white")
-        but[bec[takumi]].config(bg="white")
-        for j in kodojun:
-            for i in range(shoku):
-                shx = sh[p][i][0]
-                shy = sh[p][i][1]
-                ax = shx+bec[i] % 3-1
-                ay = shy+bec[i]//3-1
-
-                if self.act[i] == 0:  # 滞在
-                    pass
-
-                elif self.act[i] == j and j == 1:  # 移動
-                    if ax >= 0 and ax < w and ay >= 0 and ay < h:
-                        if a[0][ay][ax] == 0 or a[0][ay][ax] == 400 or (a[0][ay][ax]//100000 == (p+1) and a[0][ay][ax]%100//10 != 3):
-                            sh[p][i][0] = ax
-                            sh[p][i][1] = ay
-                            # cvs.lift(id[p][i])
-                            a[0][ay][ax] += (p+1)*10+i
-                            a[0][shy][shx] -= (p+1)*10+i
-                            cvs.move(id[p][i], (bec[i] % 3-1) *
-                                    w_width, (bec[i]//3-1) * h_width)
-                            cvs.lift(id[p][i]) 
-                            
-                elif self.act[i] == j and j == 2:  # 建築
-                    if ax >= 0 and ax < w and ay >= 0 and ay < h and bec[i] % 2 == 1:
-                        n = a[0][ay][ax]
-                        if n//100 == 0 and n/10 % 10 != 2-p:
-                            a[0][ay][ax] += (p+1) * 100000+jon[p]*100
-                            jon[p] += 1
-                            a[p+1][ay][ax] = jon[p]*10
-                            jid[p] = jid[p] + [cvs.create_rectangle(12+ax*w_width, 12+ay*h_width,9+(
-                                ax+1)*w_width,9+(ay+1)*h_width, fill=tilal[p], width=0)]
-                            cvs.lower(jid[p][jon[p]-1])
-
-                            
-                elif self.act[i]==j and j == 3:  # 解体
-                    if ax >= 0 and ax < w and ay >= 0 and ay < h and bec[i] % 2 == 1:
-                        n = a[0][ay][ax]
-                        #print(jid[p][ n//100 % 1000])
-                        if n//100000 != 0:
-                            a[0][ay][ax] = n % 100
-                            #print(jid[p][ n//100 % 1000])
-                            cvs.delete(jid[n//100000-1][ n//100 % 1000])
-                            a[n//100000][ay][ax] = 0
-
-
-        aa = np.array(a[p+1])
-        for i in range(np.shape(a)[1]):
-            if aa[i][0] == 0:
-            aa[i][0] = -1
-            if aa[i][-1] == 0:
-            aa[i][-1] = -1
-            for j in range(np.shape(a)[2]):
-                if aa[i][j]!=0 and aa[i][j]%10==0:
-                    aa[i][j] = 10
-                if aa[i][j] == 5:
-                    aa[i][j] = 0
-        for j in range(np.shape(a)[2]):
-            if aa[0][j] == 0:
-            aa[0][j] = -1
-            if aa[-1][j] == 0:
-            aa[-1][j] = -1
-        
-        if turn == 1:
-            sys.exit()
-
-        p = 1-p
-        turn -= 1
-        takumi = 0
-        self.act = [0]*shoku
-        bec = [0]*shoku
-        cvs.itemconfig(txt, text="残りターン数  "+str(turn))
-        cvs.itemconfig(id[p][takumi], fill=color[2])
-        bu[0].config(bg=color[p])
-        but[0].config(bg="gray")
-        jinti(1-p,a,1,1,aa,np.array([np.zeros_like(aa)]),1)
-        decj(1-p,aa)
-        cvs.itemconfig(point1,text="player1  "+str(point[0]))
-        cvs.itemconfig(point2,text="player2  "+str(point[1]))
-        # print(np.array(a[2-p]))
-
-
-
-    def decj(self, p,aa):
-        global a, point, b
-        point[p] = 0
-        print(np.array(a[0]))
-        for i in range(np.shape(aa)[0]):
-            for j in range(np.shape(aa)[1]):
-                if aa[i][j] == 0:
-                    a[p+1][i][j] = 5
-                if aa[i][j] == 10 :point[p] += 10
-                if a[p+1][i][j] == 5:
-                    if aa[i][j] == 0: 
-                        if a[0][i][j]//100%10 == 4:point[p] += 130
-                        else:point[p] += 30
-                    elif b[i][j] == -1:
-                        if a[0][i][j]//100%10 == 4: point[p] +=130
-                        else:point[p] += 30            
-                    else: a[p+1][i][j] = 0
-        b = aa
-
-        # print(np.array(aa)) 
-        # print(np.array(a[p+1]))
-
-
-        # for i in range(np.shape(a)[0]):
-        #     for j in range(np.shape(a)[1]):
-        #         if a[p+1][i][j] == 1:
-        #             point[p] += 30
-        #             if a[0][i][j] == 400:
-        #                 point[p] += 70
-        #             if aa[i][j] == 10:
-        #                 point[p] += 10
-        
-        # print(point)
-
-        
-        
-
-    def jinti(self, p,a,ax,ay,aa,area,n):
-        an = np.array([0,0,0,0])
-
-        if aa[ax][ay-1] == -1:
-            aa[ax][ay] = -1
-        elif aa[ax+1][ay] == -1:
-            aa[ax][ay] = -1
-        elif aa[ax][ay+1] == -1:
-            aa[ax][ay] = -1
-        elif aa[ax-1][ay] == -1:
-            aa[ax][ay] = -1
-        
-        if aa[ax][ay-1]!=10 and aa[ax][ay-1]!=-1:
-            an[0] = area[0][ax][ay-1]
-        if aa[ax+1][ay]!=10 and aa[ax+1][ay]!=-1:
-            an[1] = area[0][ax+1][ay]
-        if aa[ax][ay+1]!=10 and aa[ax][ay+1]!=-1:
-            an[2] = area[0][ax][ay+1]
-        if aa[ax-1][ay]!=10 and aa[ax-1][ay]!=-1:
-            an[3] = area[0][ax-1][ay]
-
-        if aa[ax][ay] == -1:
-            for i in an:
-                if i != 0:
-                    aa -= area[i]//i
-
-        else:
-            if np.all(an == np.array([0,0,0,0])):
-                for i in range(n-np.shape(area)[0]+1):
-                    area = np.append(area,[np.zeros_like(aa)], axis=0)
-                area[n] = np.zeros_like(aa)
-                area[n][ax][ay] = n
-                area[0][ax][ay] = n
-                n += 1
-                if n == 10:n += 1
-                
-            
-            else:
-                an = np.sort(an)
-                area[an[3]][ax][ay] = an[3]
-                for i in range(3):
-                    if an[i] != 0:
-                        if an[i] != an[i+1]:
-                            area[an[i]] += area[an[i+1]]//an[i+1]*an[i]
-                            area[an[i+1]] = np.zeros_like(aa)
-
-        for i in range(np.shape(aa)[0]-ay-1):
-            for j in range(np.shape(aa)[1]-ax-2):
-                if aa[ax+j+1][ay+i] == 0:
-                    jinti(p,a,ax+j+1,ay+i,aa,area,n)
-                    # print(np.array(aa))
-                    # return 0
-                    
-            ax=0
-        
-
-
-            
-    def click(self, e):
-        global h_width, w_width, h, w, p, color, self.takumi
-        if e.x < w_width*w+10 and e.y < h_width*h+10 and e.x >= 10 and e.y >= 10:
-            cx = (e.x-10)//w_width
-            cy = (e.y-10)//h_width
-            if a[0][cy][cx] % 100//10 == p+1:
-                n = a[0][cy][cx] % 10
-                cvs.itemconfig("s"+str(p+1), fill=color[p])
-                cvs.itemconfig(id[p][n], fill=color[2])
-                bu[self.act[self.takumi]].config(bg="white")
-                but[bec[self.takumi]].config(bg="white")
-                self.takumi = n
-                bu[self.act[n]].config(bg=color[p])
-                if self.act[self.takumi] == 0:
-                    but[bec[self.takumi]].config(bg="gray")
-                elif self.act[self.takumi] > 1 and bec[self.takumi] % 2 == 0:
-                    but[bec[self.takumi]].config(bg="gray")
-                else:
-                    but[bec[self.takumi]].config(bg=color[p])
-
-
     def start(self):
         self.p = 0
         self.takumi = 0
@@ -263,7 +33,7 @@ class App_GUI:
 
         self.filed = ["A11","A13","A15","A17","A21","A25","B11","B13","B15","B17","B21","B25","C11","C13","C15","C17","C21","C25"]
 
-        self.f = input()
+        #self.f = input()
         if self.f == "r":self.f = self.filed[rnd.randint(0,17)]
         if self.f == "A11":
             self.h = 11
@@ -389,8 +159,8 @@ class App_GUI:
 
 
 
-        self.root = tk.Tk()
-        self.root.resizable(False, False)
+        #self.root = tk.Tk()
+        #self.root.resizable(False, False)
         self.cvs = tk.Canvas(width=self.w_width*self.w+500+150, heigh=self.h_width*self.h+30+100, bg="white")
         # cvs.create_text(800,300,text="三目並べDX",fill="navy",font=("Times New Roman",60))
         for i in range(self.h+1):
@@ -399,7 +169,7 @@ class App_GUI:
         for i in range(self.w+1):
             self.cvs.create_line(10+self.w_width*i, 10, 10+self.w_width*i,
                             10+self.h_width*self.h, fill="black", width=3)
-        id = [[0]*self.shoku, [0]*self.shoku]
+        self.id = [[0]*self.shoku, [0]*self.shoku]
         for i in range(self.h):
             for j in range(self.w):
                 if self.a[0][i][j]//10 == 3:
@@ -409,13 +179,13 @@ class App_GUI:
                     self.cvs.create_rectangle(12+j*self.w_width, 12+i*self.h_width, 9+(j+1) *
                                         self.w_width, 9+(i+1)*self.h_width, fill="yellow", width=0, tag="400")
                 if self.a[0][i][j] % 100//10 == 1:
-                    id[0][self.a[0][i][j] % 10] = self.cvs.create_oval(13+j*self.w_width+self.w_h, 13+i*self.h_width, 7+(
+                    self.id[0][self.a[0][i][j] % 10] = self.cvs.create_oval(13+j*self.w_width+self.w_h, 13+i*self.h_width, 7+(
                         j+1)*self.w_width-self.w_h, 7+(i+1)*self.h_width, fill=self.color[0], width=0, tag="s1")
                 if self.a[0][i][j] % 100//10 == 2:
-                    id[1][self.a[0][i][j] % 10] = self.cvs.create_oval(13+j*self.w_width+self.w_h, 13+i*self.h_width, 7+(
+                    self.id[1][self.a[0][i][j] % 10] = self.cvs.create_oval(13+j*self.w_width+self.w_h, 13+i*self.h_width, 7+(
                         j+1)*self.w_width-self.w_h, 7+(i+1)*self.h_width, fill=self.color[1], width=0, tag="s2")
         self.b = np.zeros_like(self.a[0])
-        self.cvs.itemconfig(id[0][0], fill=self.color[2])
+        self.cvs.itemconfig(self.id[0][0], fill=self.color[2])
         self.cvs.lift("s1")
         self.cvs.lift("s2")
         # cvs.lower("400")
@@ -429,39 +199,277 @@ class App_GUI:
         self.hhh = 70
         self.bu = [0]*4
         self.but = [0]*9
-        self.bu[0] = tk.Button(text="滞在", bg="red", command=lambda: action(0))
+        self.bu[0] = tk.Button(text="滞在", bg="red", command=lambda: self.action(0))
         self.bu[0].place(x=self.rightt+self.wspace, y=self.hspace, width=self.www, heigh=self.hhh)
-        self.bu[1] = tk.Button(text="移動", bg="white", command=lambda: action(1))
+        self.bu[1] = tk.Button(text="移動", bg="white", command=lambda: self.action(1))
         self.bu[1].place(x=self.rightt+self.wspace, y=self.hspace+self.hhh, width=self.www, heigh=self.hhh)
-        self.bu[2] = tk.Button(text="建築", bg="white", command=lambda: action(2))
+        self.bu[2] = tk.Button(text="建築", bg="white", command=lambda: self.action(2))
         self.bu[2].place(x=self.rightt+self.wspace, y=self.hspace+self.hhh*2, width=self.www, heigh=self.hhh)
-        self.bu[3] = tk.Button(text="解体", bg="white", command=lambda: action(3))
+        self.bu[3] = tk.Button(text="解体", bg="white", command=lambda: self.action(3))
         self.bu[3].place(x=self.rightt+self.wspace, y=self.hspace+self.hhh*3, width=self.www, heigh=self.hhh)
-        self.but[0] = tk.Button(text='↖', bg='gray', command=lambda: bector(0))
+        self.but[0] = tk.Button(text='↖', bg='gray', command=lambda: self.bector(0))
         self.but[0].place(x=self.rightt+self.wspace*2+self.www, y=self.hspace, width=self.www, heigh=self.hhh)
-        self.but[1] = tk.Button(text='↑', bg='white', command=lambda: bector(1))
+        self.but[1] = tk.Button(text='↑', bg='white', command=lambda: self.bector(1))
         self.but[1].place(x=self.rightt+self.wspace*2+self.www*2, y=self.hspace, width=self.www, heigh=self.hhh)
-        self.but[2] = tk.Button(text='↗', bg='white', command=lambda: bector(2))
+        self.but[2] = tk.Button(text='↗', bg='white', command=lambda: self.bector(2))
         self.but[2].place(x=self.rightt+self.wspace*2+self.www*3, y=self.hspace, width=self.www, heigh=self.hhh)
-        self.but[3] = tk.Button(text='←', bg='white', command=lambda: bector(3))
+        self.but[3] = tk.Button(text='←', bg='white', command=lambda: self.bector(3))
         self.but[3].place(x=self.rightt+self.wspace*2+self.www, y=self.hspace+self.hhh, width=self.www, heigh=self.hhh)
-        self.but[5] = tk.Button(text='→', bg='white', command=lambda: bector(5))
+        self.but[5] = tk.Button(text='→', bg='white', command=lambda: self.bector(5))
         self.but[5].place(x=self.rightt+self.wspace*2+self.www*3, y=self.hspace+self.hhh, width=self.www, heigh=self.hhh)
-        self.but[6] = tk.Button(text='↙', bg='white', command=lambda: bector(6))
+        self.but[6] = tk.Button(text='↙', bg='white', command=lambda: self.bector(6))
         self.but[6].place(x=self.rightt+self.wspace*2+self.www, y=self.hspace+self.hhh*2, width=self.www, heigh=self.hhh)
-        self.but[7] = tk.Button(text='↓', bg='white', command=lambda: bector(7))
+        self.but[7] = tk.Button(text='↓', bg='white', command=lambda: self.bector(7))
         self.but[7].place(x=self.rightt+self.wspace*2+self.www*2, y=self.hspace+self.hhh*2, width=self.www, heigh=self.hhh)
-        self.but[8] = tk.Button(text='↘', bg='white', command=lambda: bector(8))
+        self.but[8] = tk.Button(text='↘', bg='white', command=lambda: self.bector(8))
         self.but[8].place(x=self.rightt+self.wspace*2+self.www*3, y=self.hspace+self.hhh*2, width=self.www, heigh=self.hhh)
-        self.enter = tk.Button(text='確定', bg='gray', command=submit)
+        self.enter = tk.Button(text='確定', bg='gray', command=self.submit)
         self.enter.place(x=self.rightt+self.wspace*2+self.www*2, y=self.hspace+self.hhh, width=self.www, height=self.hhh)
         self.txt = self.cvs.create_text(self.rightt+self.wspace*2+self.www*2.5, self.hspace +
-                            self.hhh*3.5, text="残りターン数　"+str(self.turn), font=("", 24))
+                            self.hhh*3.5, text="残りターン数  "+str(self.turn), font=("", 24))
         self.point1 = self.cvs.create_text(self.rightt+self.wspace*2+self.www*2.5, self.hspace +
                             self.hhh*4.5, text="player1  "+str(self.point[0]), font=("", 24),fill="red")
         self.point2 = self.cvs.create_text(self.rightt+self.wspace*2+self.www*2.5, self.hspace +
                             self.hhh*5.5, text="player2  "+str(self.point[1]), font=("", 24),fill="blue")
         self.cvs.update()
         self.cvs.pack()
-        self.root.bind("<Button>", click)
-        self.root.mainloop()
+        self.master.bind("<Button>", self.click)
+        #self.root.bind("<Button>", click)
+        #self.root.mainloop()
+
+
+    def action(self, n):
+        #global act, color, p, takumi,a
+        if self.act[self.takumi] != n:
+            self.bu[self.act[self.takumi]].config(bg="white")
+            self.act[self.takumi] = n
+            self.bu[n].config(bg=self.color[self.p])
+            if self.act[self.takumi] == 0:
+                self.but[self.bec[self.takumi]].config(bg="gray")
+            elif self.act[self.takumi] > 1 and self.bec[self.takumi] % 2 == 0:
+                self.but[self.bec[self.takumi]].config(bg="gray")
+            else:
+                self.but[self.bec[self.takumi]].config(bg=self.color[self.p])
+
+    def bector(self, n):
+        # global bec, act, color, p, takumi
+        if self.bec[self.takumi] != n:
+            self.but[self.bec[self.takumi]].config(bg="white")
+            self.bec[self.takumi] = n
+            if self.act[self.takumi] == 0:
+                self.but[n].config(bg="gray")
+            elif self.act[self.takumi] > 1 and n % 2 == 0:
+                self.but[n].config(bg="gray")
+            else:
+                self.but[n].config(bg=self.color[self.p])
+
+
+    def submit(self):
+        # global bec, act, color, p, takumi, turn, w, h, sh, h_width, w_width,area
+        self.cvs.itemconfig("s"+str(self.p+1), fill=self.color[self.p])
+        self.bu[self.act[self.takumi]].config(bg="white")
+        self.but[self.bec[self.takumi]].config(bg="white")
+        for j in self.kodojun:
+            for i in range(self.shoku):
+                shx = self.sh[self.p][i][0]
+                shy = self.sh[self.p][i][1]
+                ax = shx+self.bec[i] % 3-1
+                ay = shy+self.bec[i]//3-1
+
+                if self.act[i] == 0:  # 滞在
+                    pass
+
+                elif self.act[i] == j and j == 1:  # 移動
+                    if ax >= 0 and ax < self.w and ay >= 0 and ay < self.h:
+                        if self.a[0][ay][ax] == 0 or self.a[0][ay][ax] == 400 or (self.a[0][ay][ax]//100000 == (self.p+1) and self.a[0][ay][ax]%100//10 != 3):
+                            self.sh[self.p][i][0] = ax
+                            self.sh[self.p][i][1] = ay
+                            # cvs.lift(id[p][i])
+                            self.a[0][ay][ax] += (self.p+1)*10+i
+                            self.a[0][shy][shx] -= (self.p+1)*10+i
+                            self.cvs.move(self.id[self.p][i], (self.bec[i] % 3-1) *
+                                    self.w_width, (self.bec[i]//3-1) * self.h_width)
+                            self.cvs.lift(self.id[self.p][i]) 
+                            
+                elif self.act[i] == j and j == 2:  # 建築
+                    if ax >= 0 and ax < self.w and ay >= 0 and ay < self.h and self.bec[i] % 2 == 1:
+                        n = self.a[0][ay][ax]
+                        if n//100 == 0 and n/10 % 10 != 2-self.p:
+                            self.a[0][ay][ax] += (self.p+1) * 100000+self.jon[self.p]*100
+                            self.jon[self.p] += 1
+                            self.a[self.p+1][ay][ax] = self.jon[self.p]*10
+                            self.jid[self.p] = self.jid[self.p] + [self.cvs.create_rectangle(12+ax*self.w_width, 12+ay*self.h_width,9+(
+                                ax+1)*self.w_width,9+(ay+1)*self.h_width, fill=self.tilal[self.p], width=0)]
+                            self.cvs.lower(self.jid[self.p][self.jon[self.p]-1])
+
+                            
+                elif self.act[i]==j and j == 3:  # 解体
+                    if ax >= 0 and ax < self.w and ay >= 0 and ay < self.h and self.bec[i] % 2 == 1:
+                        n = self.a[0][ay][ax]
+                        #print(self.jid[self.p][ n//100 % 1000])
+                        if n//100000 != 0:
+                            self.a[0][ay][ax] = n % 100
+                            #print(self.jid[self.p][ n//100 % 1000])
+                            self.cvs.delete(self.jid[n//100000-1][ n//100 % 1000])
+                            self.a[n//100000][ay][ax] = 0
+
+
+        aa = np.array(self.a[self.p+1])
+        for i in range(np.shape(self.a)[1]):
+            if aa[i][0] == 0:
+                aa[i][0] = -1
+            if aa[i][-1] == 0:
+                aa[i][-1] = -1
+            for j in range(np.shape(self.a)[2]):
+                if aa[i][j]!=0 and aa[i][j]%10==0:
+                    aa[i][j] = 10
+                if aa[i][j] == 5:
+                    aa[i][j] = 0
+        for j in range(np.shape(self.a)[2]):
+            if aa[0][j] == 0:
+                aa[0][j] = -1
+            if aa[-1][j] == 0:
+                aa[-1][j] = -1
+        
+        if self.turn == 1:
+            sys.exit()
+
+        self.p = 1-self.p
+        self.turn -= 1
+        self.takumi = 0
+        self.act = [0]*self.shoku
+        self.bec = [0]*self.shoku
+        self.cvs.itemconfig(self.txt, text="残りターン数  "+str(self.turn))
+        self.cvs.itemconfig(self.id[self.p][self.takumi], fill=self.color[2])
+        self.bu[0].config(bg=self.color[self.p])
+        self.but[0].config(bg="gray")
+        self.jinti(1-self.p,self.a,1,1,aa,np.array([np.zeros_like(aa)]),1)
+        self.decj(1-self.p,aa)
+        self.cvs.itemconfig(self.point1,text="player1  "+str(self.point[0]))
+        self.cvs.itemconfig(self.point2,text="player2  "+str(self.point[1]))
+        # print(np.array(self.a[2-self.p]))
+
+
+
+    def decj(self, p,aa):
+        #global a, point, b
+        self.point[self.p] = 0
+        print(np.array(self.a[0]))
+        for i in range(np.shape(aa)[0]):
+            for j in range(np.shape(aa)[1]):
+                if aa[i][j] == 0:
+                    self.a[self.p+1][i][j] = 5
+                if aa[i][j] == 10 :self.point[self.p] += 10
+                if self.a[self.p+1][i][j] == 5:
+                    if aa[i][j] == 0: 
+                        if self.a[0][i][j]//100%10 == 4:self.point[self.p] += 130
+                        else:self.point[self.p] += 30
+                    elif self.b[i][j] == -1:
+                        if self.a[0][i][j]//100%10 == 4: self.point[self.p] +=130
+                        else:self.point[self.p] += 30            
+                    else: self.a[self.p+1][i][j] = 0
+        self.b = aa
+
+        # print(np.array(aa)) 
+        # print(np.array(a[p+1]))
+
+
+        # for i in range(np.shape(a)[0]):
+        #     for j in range(np.shape(a)[1]):
+        #         if a[p+1][i][j] == 1:
+        #             point[p] += 30
+        #             if a[0][i][j] == 400:
+        #                 point[p] += 70
+        #             if aa[i][j] == 10:
+        #                 point[p] += 10
+        
+        # print(point)
+
+        
+        
+
+    def jinti(self, p,a,ax,ay,aa,area,n):
+        an = np.array([0,0,0,0])
+
+        if aa[ax][ay-1] == -1:
+            aa[ax][ay] = -1
+        elif aa[ax+1][ay] == -1:
+            aa[ax][ay] = -1
+        elif aa[ax][ay+1] == -1:
+            aa[ax][ay] = -1
+        elif aa[ax-1][ay] == -1:
+            aa[ax][ay] = -1
+        
+        if aa[ax][ay-1]!=10 and aa[ax][ay-1]!=-1:
+            an[0] = area[0][ax][ay-1]
+        if aa[ax+1][ay]!=10 and aa[ax+1][ay]!=-1:
+            an[1] = area[0][ax+1][ay]
+        if aa[ax][ay+1]!=10 and aa[ax][ay+1]!=-1:
+            an[2] = area[0][ax][ay+1]
+        if aa[ax-1][ay]!=10 and aa[ax-1][ay]!=-1:
+            an[3] = area[0][ax-1][ay]
+
+        if aa[ax][ay] == -1:
+            for i in an:
+                if i != 0:
+                    aa -= area[i]//i
+
+        else:
+            if np.all(an == np.array([0,0,0,0])):
+                for i in range(n-np.shape(area)[0]+1):
+                    area = np.append(area,[np.zeros_like(aa)], axis=0)
+                area[n] = np.zeros_like(aa)
+                area[n][ax][ay] = n
+                area[0][ax][ay] = n
+                n += 1
+                if n == 10:n += 1
+                
+            
+            else:
+                an = np.sort(an)
+                area[an[3]][ax][ay] = an[3]
+                for i in range(3):
+                    if an[i] != 0:
+                        if an[i] != an[i+1]:
+                            area[an[i]] += area[an[i+1]]//an[i+1]*an[i]
+                            area[an[i+1]] = np.zeros_like(aa)
+
+        for i in range(np.shape(aa)[0]-ay-1):
+            for j in range(np.shape(aa)[1]-ax-2):
+                if aa[ax+j+1][ay+i] == 0:
+                    self.jinti(p,a,ax+j+1,ay+i,aa,area,n)
+                    # print(np.array(aa))
+                    # return 0
+                    
+            ax=0
+        
+
+
+            
+    def click(self, e):
+        #global h_width, w_width, h, w, p, color, takumi
+        if e.x < self.w_width*self.w+10 and e.y < self.h_width*self.h+10 and e.x >= 10 and e.y >= 10:
+            cx = (e.x-10)//self.w_width
+            cy = (e.y-10)//self.h_width
+            if self.a[0][cy][cx] % 100//10 == self.p+1:
+                n = self.a[0][cy][cx] % 10
+                self.cvs.itemconfig("s"+str(self.p+1), fill=self.color[self.p])
+                self.cvs.itemconfig(self.id[self.p][n], fill=self.color[2])
+                self.bu[self.act[self.takumi]].config(bg="white")
+                self.but[self.bec[self.takumi]].config(bg="white")
+                self.takumi = n
+                self.bu[self.act[n]].config(bg=self.color[self.p])
+                if self.act[self.takumi] == 0:
+                    self.but[self.bec[self.takumi]].config(bg="gray")
+                elif self.act[self.takumi] > 1 and self.bec[self.takumi] % 2 == 0:
+                    self.but[self.bec[self.takumi]].config(bg="gray")
+                else:
+                    self.but[self.bec[self.takumi]].config(bg=self.color[self.p])
+
+
+main_window = tk.Tk()
+field_info = input("フィールド：")
+myapp = App_GUI(master=main_window)
+myapp.master.title("myapp")
+myapp.master.lift()
+myapp.mainloop()
