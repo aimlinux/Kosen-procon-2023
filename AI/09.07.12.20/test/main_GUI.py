@@ -233,7 +233,7 @@ class App_GUI(tk.Frame):
                             self.hhh*5.5, text="player2  "+str(self.point[1]), font=("", 24),fill="blue")
         self.cvs.update()
         self.cvs.pack()
-        self.master.bind("<Button>", self.click)
+        self.master.bind("<Button-3>", self.click)
         #self.root.bind("<Button>", click)
         #self.root.mainloop()
 
@@ -345,8 +345,8 @@ class App_GUI(tk.Frame):
         self.but[0].config(bg="gray")
         self.jinti(1-self.p,self.a,1,1,aa,np.array([np.zeros_like(aa)]),1)
         self.decj(1-self.p,aa)
-        self.cvs.itemconfig(self.point1,text="player1  "+str(self.point[0]))
-        self.cvs.itemconfig(self.point2,text="player2  "+str(self.point[1]))
+        self.cvs.itemconfig(self.point1,text="player1  "+str(self.point[1]))
+        self.cvs.itemconfig(self.point2,text="player2  "+str(self.point[0]))
         # print(np.array(self.a[2-self.p]))
 
 
@@ -354,7 +354,7 @@ class App_GUI(tk.Frame):
     def decj(self, p,aa):
         #global a, point, b
         self.point[self.p] = 0
-        print(np.array(self.a[0]))
+        print(np.array(aa))
         for i in range(np.shape(aa)[0]):
             for j in range(np.shape(aa)[1]):
                 if aa[i][j] == 0:
