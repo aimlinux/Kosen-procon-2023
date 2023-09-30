@@ -394,7 +394,7 @@ for i in range(h):
                                  * w_width, 4+(i+1)*h_width, fill="black", width=0, tag="30")
         if a[0][i][j]//100 == 4:
             cvs.create_rectangle(12+j*w_width, 12+i*h_width, 9+(j+1) *
-                                 w_width, 9+(i+1)*h_width, fill="yellow", width=0, tag="400")
+                                w_width, 9+(i+1)*h_width, fill="yellow", width=0, tag="400")
         if a[0][i][j] % 100//10 == 1:
             id[0][a[0][i][j] % 10] = cvs.create_oval(13+j*w_width+w_h, 13+i*h_width, 7+(
                 j+1)*w_width-w_h, 7+(i+1)*h_width, fill=color[0], width=0, tag="s1")
