@@ -3,7 +3,7 @@
 import requests
 
 
-server_url = "https://procon34system.kosen.work"# サーバーのURL
+server_url = "https://localhost:80"# サーバーのURL
 token_file = "C:/Users/kxiyt/Desktop/token.txt"
 with open(token_file, encoding="UTF-8") as f:
     f_text = f.read()
@@ -18,8 +18,8 @@ try:
         "https":None
     }
     # サーバーから試合状態を取得
-    #response = requests.get(f"{server_url}/state?token={token_text}", verify=False, proxies=proxies)
-    response = requests.get(f"{server_url}/state?token={token_text}")
+    response = requests.get(f"{server_url}/state?token={token_text}", verify=False, proxies=proxies)
+    #response = requests.get(f"{server_url}/state?token={token_text}")
 
     if response.status_code == 200 or response.status_code == 201 or response.status_code == 404:
         game_state = response.json()
