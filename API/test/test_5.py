@@ -1,4 +1,5 @@
 import requests
+import json
 
 # 試合IDとトークンを設定
 match_id = 1000  # 例として試合IDを設定
@@ -12,13 +13,17 @@ headers = {
 }
 
 # 更新する情報を作成
-turn = 200  # ターン数を設定
+turn = 200  # 更新する現在のターン数を設定
+type_actions = "move" # 行動のタイプを設定
+course_actions = "up" # 行動の方向を設定
+masons_number = 1 #行動する職人の番号を設定
+
 # 職人の行動計画を設定
 actions = [
     {
-        "type": "move",  # 行動のタイプを設定（例: move, build, remove）
-        "dir": "up",     # 行動の方向を設定
-        "mason": 1,      # 職人の番号を設定
+        "type": type_actions,  # 行動のタイプを設定（例: move, build, remove）
+        "dir": course_actions,     # 行動の方向を設定
+        "mason": masons_number,      # 職人の番号を設定
     },
     # 他の職人の行動計画も同様に設定
 ]
