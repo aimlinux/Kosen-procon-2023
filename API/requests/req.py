@@ -46,6 +46,8 @@ def initial_requests():
         print("HTTPリクエストエラー:", e)
         
     if field_data:
+        logger.log(100, "Match has started, Get initial states")
+        
         # -------- 試合情報の取得 --------
         match_id = field_data['matches'][0]['id'] # 試合のID
         turns_num = field_data['matches'][0]['turns'] # 総ターン数
@@ -141,7 +143,7 @@ def turns_requests(matches_id):
 
 # 行動計画更新
 def send_requests(matches_id):
-    url = 
+    pass
 
 
 
