@@ -16,7 +16,7 @@ if initial_turn:
     turns_seconds = initial_data['match']['turnSeconds'] # １ターンの制限時間
     # 各ボーナスポイント
     # wall_point = initial_data['match']['bonus']['wall'] # 城壁のボーナスポイント
-    # territory_point = initial_data['match']['bonus']['castle'] # 陣地のボーナスポイント
+    # territory_point = initial_data['match']['bonus']['territory'] # 陣地のボーナスポイント
     # castle_point = initial_data['match']['bonus']['castle'] # 城のボーナスポイント
     # print(match_id, turns_num, turns_seconds, wall_point, territory_point, castle_point)
 

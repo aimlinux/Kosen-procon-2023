@@ -1,7 +1,7 @@
 {
   "teams": [
-    {"name": "先攻チーム", "token": ""},
-    {"name": "後攻チーム", "token": ""}
+    {"name": "先攻チーム", "token": "abc12345"},
+    {"name": "後攻チーム", "token": "abc54321"}
   ],
   "match": {
     "id": 10,

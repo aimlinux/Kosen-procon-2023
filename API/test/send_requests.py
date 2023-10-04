@@ -3,10 +3,10 @@ import json
 
 # 試合IDとトークンを設定
 match_id = 10  # 例として試合IDを設定
-token = "your_token_here"  # トークンを設定
+token = "abc12345"  # トークンを設定
 
 # APIエンドポイントとヘッダーを設定
-url = f"http://hocalhost:3000/matches/{match_id}"
+url = f"http://localhost:3000/matches/{match_id}?token=abc12345"
 headers = {
     "Content-Type": "application/json",
     "procon-token": token,
@@ -14,8 +14,8 @@ headers = {
 
 # 更新する情報を作成
 turn = 30  # 更新する現在のターン数を設定
-type_actions = "move" # 行動のタイプを設定
-course_actions = "up" # 行動の方向を設定
+type_actions = 0 # 行動のタイプを設定
+course_actions = 0 # 行動の方向を設定
 masons_number = 1 #行動する職人の番号を設定
 
 # 職人の行動計画を設定
@@ -34,8 +34,20 @@ request_body = {
     "actions": actions,
 }
 
+
+request_body = {
+    "turn": 30,
+    "actions": [
+        {
+            "type": 0,
+            "dir": 0
+        }
+    ]
+}
 # APIリクエストを送信
+#response = requests.post(url, json=request_body, headers=headers)
 response = requests.post(url, json=request_body, headers=headers)
+
 
 # レスポンスを処理
 if response.status_code == 200:
