@@ -3,7 +3,8 @@
 import requests
 import json
 import logging
-
+import keyboard
+import time
 
 
 # -------- logの設定 --------
@@ -35,7 +36,7 @@ token_text = "abc12345" # テスト用
 def initial_requests():
     try:
         # サーバーから試合状態を取得
-        response = requests.get(f"http://localhost:3000/matches?token=abc12345") # テスト用（初期状態を取得）
+        response = requests.get(f"http://localhost:3000/matches?token={token_text}") # テスト用（初期状態を取得）
         if response.status_code == 200 or response.status_code == 201 or response.status_code == 404: # 正常なstatus_codeは[200]
             field_data = response.json()
             print(f"試合の初期状態を取得しました。（status_code : {response.status_code}）")
@@ -60,7 +61,7 @@ def initial_requests():
         board_size = [field_data['matches'][0]['board']['width'], field_data['matches'][0]['board']['height']] # フィールドのサイズ（縦x横）
         board_weight = board_size[0]
         #print(f"試合ID : {match_id},  総ターン数 : {turns_num},  1ターン制限時間 : {turns_seconds},  職人の数 : {masons_num},  フィールドの幅 : {board_weight}")
-        logger.log(100, f"試合ID : {match_id},  総ターン数 : {turns_num},  1ターン制限時間 : {turns_seconds},  職人の数 : {masons_num},  フィールドの幅 : {board_weight}")
+        logger.log(100, f"match_id : {match_id},  turns_num : {turns_num},  turns_seconds : {turns_seconds},  masons_num : {masons_num},  board_weight : {board_weight}")
 
         # フィールド情報｛二次元配列（縦x横）｝
         structures = field_data['matches'][0]['board']['structures'] # 構造物（0：無配置, 1：池, 2：城）
@@ -80,7 +81,8 @@ def initial_requests():
         print("no initial field_data")
         
     # 戻り値 : 試合id, 総ターン数, １ターン制限時間, 職人の数, フィールドの幅, 構造物, 職人
-    return match_id, turns_num, turns_seconds, masons_num, board_weight, arr_structures, arr_masons
+    returns = [match_id, turns_num, turns_seconds, masons_num, board_weight, arr_structures, arr_masons]
+    return returns
 
     
     
@@ -89,7 +91,7 @@ def turns_requests(matches_id):
     try:
         # サーバーから試合状態を取得
         #response = requests.get(f"{server_url}/matches/10?token={token_text}")
-        response = requests.get(f"http://localhost:3000/matches/{matches_id}?token=abc12345") # テスト（1ターン目以降の情報を取得）
+        response = requests.get(f"http://localhost:3000/matches/{matches_id}?token={token_text}") # テスト（1ターン目以降の情報を取得）
         if response.status_code == 200 or response.status_code == 201 or response.status_code == 404: # 正常なstatus_codeは[200]
             field_data = response.json()
             print(f"試合の状態を取得しました。（status_code : {response.status_code}）")
@@ -107,7 +109,7 @@ def turns_requests(matches_id):
         board_size = [field_data['board']['width'], field_data['board']['height']] # フィールドのサイズ（縦x横）
         board_weight = board_size[0]
         #print(f"試合ID : {match_id},  現在のターン数 : {turns_num})
-        logger.log(100, f"試合ID : {match_id},  現在のターン数 : {turns_num}")
+        logger.log(100, f"match_id : {match_id},  turns_num : {turns_num}")
 
         # フィールド情報｛二次元配列（縦x横）｝
         structures = field_data['board']['structures'] # 構造物（0：無配置, 1：池, 2：城）
@@ -138,7 +140,8 @@ def turns_requests(matches_id):
     logger.log(100, f"{logs_txt}")
     
     # 戻り値 : 試合id, ターン数, 構造物, 職人, 城壁, 陣地
-    return match_id, turns_num, arr_structures, arr_masons, arr_walls, arr_territories
+    returns = [match_id, turns_num, arr_structures, arr_masons, arr_walls, arr_territories]
+    return returns
 
 
 # 行動計画更新
@@ -148,12 +151,37 @@ def send_requests(matches_id):
 
 
 
-
-
+# def on_key_event(e):
+#     if e.name() == "w":
+#         print("「w」キーが押されたので試合を開始します。")
+# keyboard.hook(on_key_event)
 
 a = initial_requests()
-matches_id = a[0]
-b = turns_requests(matches_id)
-c = send_requests(matches_id)
+if a:
+    # 時間カウントをスタートする
+    time_sta = time.time()
+# 初期状態の返り値を各変数に代入
+match_id = a[0] # 試合id
+turns_num = a[1] # ターン数
+turns_seconds = a[2] # １ターンの制限時間
+masons_num = a[3] # 職人の数
+board_weight = a[4] # フィールドの幅
+arr_structures = a[5] # 城壁の初期状態 (2次元配列)
+arr_masons = a[6] # 陣地の初期状態 (2次元配列)
 
-
+# 初期状態を取得してから一定の時間が経過したら１ターン目の情報の取得を開始
+while True:
+    time_end = time.time()
+    if time_end - time_sta >= 9:
+        break
+    
+# ３秒ごとに
+count_turns_tmp = turns_num
+while count_turns_tmp > 0:
+    b = turns_requests(match_id)
+    count_turns_tmp -= 1
+    time.sleep(3)
+    
+print("終わりました。")
+    
+# c = send_requests(matches_id)
