@@ -3,7 +3,6 @@
 import requests
 import json
 import logging
-import keyboard
 import time
 
 
@@ -23,10 +22,10 @@ fh.setFormatter(formatter)
 sh.setFormatter(formatter)
 
 server_url = "http//localhost:3000"# サーバーのURL
-token_file = "C:/Users/kxiyt/Desktop/token.txt"
-with open(token_file, encoding="UTF-8") as f:
-    f_text = f.read()
-token_text = f_text
+# token_file = "C:/Users/kxiyt/Desktop/token.txt"
+# with open(token_file, encoding="UTF-8") as f:
+#     f_text = f.read()
+# token_text = f_text
 token_text = "abc12345" # テスト用
 
 
@@ -34,9 +33,18 @@ token_text = "abc12345" # テスト用
 
 # 初期状態の情報を取得 (デフォルトではサーバーを起動して10秒以内にアクセス)
 def initial_requests():
+    field_data = None # 初期化
+    match_id = 0  # 初期化
+    turns_num = 0  # 初期化
+    turns_seconds = 0  # 初期化
+    masons_num = 0  # 初期化
+    board_size = 0 # 初期化
+    board_weight = 0  # 初期化
+    arr_structures = []  # 初期化
+    arr_masons = []  # 初期化
     try:
         # サーバーから試合状態を取得
-        response = requests.get(f"http://localhost:3000/matches?token={token_text}") # テスト用（初期状態を取得）
+        response = requests.get(f"{server_url}/matches?token={token_text}") # テスト用（初期状態を取得）
         if response.status_code == 200 or response.status_code == 201 or response.status_code == 404: # 正常なstatus_codeは[200]
             field_data = response.json()
             print(f"試合の初期状態を取得しました。（status_code : {response.status_code}）")
@@ -88,10 +96,10 @@ def initial_requests():
     
 # 毎ターンごとの状態取得
 def turns_requests(matches_id):
+    field_data = None # 初期化
     try:
         # サーバーから試合状態を取得
-        #response = requests.get(f"{server_url}/matches/10?token={token_text}")
-        response = requests.get(f"http://localhost:3000/matches/{matches_id}?token={token_text}") # テスト（1ターン目以降の情報を取得）
+        response = requests.get(f"{server_url}/matches/{matches_id}?token={token_text}") # テスト（1ターン目以降の情報を取得）
         if response.status_code == 200 or response.status_code == 201 or response.status_code == 404: # 正常なstatus_codeは[200]
             field_data = response.json()
             print(f"試合の状態を取得しました。（status_code : {response.status_code}）")
@@ -145,16 +153,45 @@ def turns_requests(matches_id):
 
 
 # 行動計画更新
-def send_requests(matches_id):
-    pass
+def send_requests(matches_id, turns, masons):
+    
+    # ヘッダーを設定
+    headers = {
+        "Content-Type": "application/json",
+        "procon-token": token_text
+    }
+    # クエリパラメータを設定
+    query_params = {
+        "token" : token_text
+    }
+    turn = turns # 更新するターン数
+    
+    # 職人の数だけactionsの配列を用意する
+    actions_arr = []
+    masons_tmp = masons
+    type_arr = [0, 0, 0, 0, 0, 0, 0, 0] # 職人の総数の行動を配列に入れる
+    dir_arr = [0, 0, 0, 0, 0, 0, 0, 0] # 職人の総数の方向を配列に入れる
+    for i in range(0, masons_tmp - 1):
+        tmp = {
+            "type": type_arr[i],
+            "dir": dir_arr[i],
+        }
+        actions_arr.append(tmp)
+    
+    # リクエストボディを作成
+    request_body = {
+        "turn": turn, 
+        "actions": [
+            actions_arr
+        ]
+    }
+    
+    print(request_body)
+    
+    return 0
+    
+    
 
-
-
-
-# def on_key_event(e):
-#     if e.name() == "w":
-#         print("「w」キーが押されたので試合を開始します。")
-# keyboard.hook(on_key_event)
 
 a = initial_requests()
 if a:
@@ -177,11 +214,17 @@ while True:
     
 # ３秒ごとに
 count_turns_tmp = turns_num
+turn_count = 1
 while count_turns_tmp > 0:
     b = turns_requests(match_id)
     count_turns_tmp -= 1
-    time.sleep(3)
+    
+    # ---- 行動計画更新 ----
+    turns = turn_count # 更新するターン数を決める
+    masons = masons_num
+    send_requests(match_id, turns, masons)
+    turn_count += 1
+    time.sleep(turns_seconds - 0.05)
     
 print("終わりました。")
     
-# c = send_requests(matches_id)
