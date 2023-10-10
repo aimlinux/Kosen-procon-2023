@@ -19,25 +19,47 @@ query_params = {
 }
 
 # 更新する情報を作成
-turn = 30  # 更新する現在のターン数を設定
+turn = 1 # 更新する現在のターン数を設定
 type_actions = 0 # 行動のタイプを設定
 course_actions = 0 # 行動の方向を設定
 masons_number = 1 #行動する職人の番号を設定
 
+# 職人の数だけactionsの配列を用意する
+actions_arr = []
+masons_tmp = 2
+type_arr = [0, 0]
+dir_arr = [0, 0]
+
+for i in range(0, masons_tmp):
+    tmp = {
+        "type": type_arr[i],
+        "dir": dir_arr[i],
+    }
+    actions_arr.append(tmp)
+
 # リクエストボディを作成
 request_body = {
-    "turn": 1,
-    "actions": [
-        {
-            "type": 0,
-            "dir": 0,
-        },
-        {
-            "type": 0,
-            "dir": 0,
-        }
-    ]
+    "turn": turn, 
+    "actions": actions_arr
 }
+
+print(request_body)
+
+
+# # リクエストボディを作成
+# request_body = {
+#     "turn": 1,
+#     "actions": [
+#         {
+#             "type": 0,
+#             "dir": 0,
+#         },
+#         {
+#             "type": 0,
+#             "dir": 0,
+#         }
+#     ]
+# }
 # APIリクエストを送信
 #response = requests.post(url, json=request_body, headers=headers)
 response = requests.post(url, json=request_body, params=query_params, headers=headers)

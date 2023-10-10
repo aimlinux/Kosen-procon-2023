@@ -1,5 +1,5 @@
-# HTTP GETリクエストを使用して競技サーバーにアクセスする。
-# リクエストとは、他方へ送信する要求メッセージなどのこと
+# HTTP GET & POSTリクエストを使用して競技サーバーにアクセスする。
+
 import requests
 import json
 import logging
@@ -21,13 +21,12 @@ formatter = logging.Formatter('%(asctime)s --- message : %(message)s')
 fh.setFormatter(formatter)
 sh.setFormatter(formatter)
 
-server_url = "http//localhost:3000"# サーバーのURL
+# server_url = "http//localhost:3000"# サーバーのURL
 # token_file = "C:/Users/kxiyt/Desktop/token.txt"
 # with open(token_file, encoding="UTF-8") as f:
 #     f_text = f.read()
 # token_text = f_text
 token_text = "abc12345" # テスト用
-
 
 
 
@@ -44,7 +43,7 @@ def initial_requests():
     arr_masons = []  # 初期化
     try:
         # サーバーから試合状態を取得
-        response = requests.get(f"{server_url}/matches?token={token_text}") # テスト用（初期状態を取得）
+        response = requests.get(f"http://localhost:3000/matches?token={token_text}") # テスト用（初期状態を取得）
         if response.status_code == 200 or response.status_code == 201 or response.status_code == 404: # 正常なstatus_codeは[200]
             field_data = response.json()
             print(f"試合の初期状態を取得しました。（status_code : {response.status_code}）")
@@ -91,7 +90,6 @@ def initial_requests():
     # 戻り値 : 試合id, 総ターン数, １ターン制限時間, 職人の数, フィールドの幅, 構造物, 職人
     returns = [match_id, turns_num, turns_seconds, masons_num, board_weight, arr_structures, arr_masons]
     return returns
-
     
     
 # 毎ターンごとの状態取得
@@ -99,7 +97,7 @@ def turns_requests(matches_id):
     field_data = None # 初期化
     try:
         # サーバーから試合状態を取得
-        response = requests.get(f"{server_url}/matches/{matches_id}?token={token_text}") # テスト（1ターン目以降の情報を取得）
+        response = requests.get(f"http://localhost:3000/matches/{matches_id}?token={token_text}") # テスト（1ターン目以降の情報を取得）
         if response.status_code == 200 or response.status_code == 201 or response.status_code == 404: # 正常なstatus_codeは[200]
             field_data = response.json()
             print(f"試合の状態を取得しました。（status_code : {response.status_code}）")
@@ -153,8 +151,7 @@ def turns_requests(matches_id):
 
 
 # 行動計画更新
-def send_requests(matches_id, turns, masons):
-    
+def send_requests(matches_id, turns, masons, type_arr, dir_arr):
     # ヘッダーを設定
     headers = {
         "Content-Type": "application/json",
@@ -165,13 +162,12 @@ def send_requests(matches_id, turns, masons):
         "token" : token_text
     }
     turn = turns # 更新するターン数
-    
+    match_id = matches_id # 試合ID
     # 職人の数だけactionsの配列を用意する
     actions_arr = []
     masons_tmp = masons
-    type_arr = [0, 0, 0, 0, 0, 0, 0, 0] # 職人の総数の行動を配列に入れる
-    dir_arr = [0, 0, 0, 0, 0, 0, 0, 0] # 職人の総数の方向を配列に入れる
-    for i in range(0, masons_tmp - 1):
+
+    for i in range(0, masons_tmp):
         tmp = {
             "type": type_arr[i],
             "dir": dir_arr[i],
@@ -181,12 +177,24 @@ def send_requests(matches_id, turns, masons):
     # リクエストボディを作成
     request_body = {
         "turn": turn, 
-        "actions": [
-            actions_arr
-        ]
+        "actions": actions_arr
     }
     
-    print(request_body)
+    url = f"http://localhost:3000/matches/{match_id}" # テスト用
+    try:
+        # APIリクエストを送信
+        response = requests.post(url, json=request_body, params=query_params, headers=headers)
+        # レスポンスを処理
+        if response.status_code == 200:
+            response_data = response.json()
+            accepted_at = response_data.get("accepted_at")
+            print(f"リクエストが受理されました。受理時刻: {accepted_at}")
+        else:
+            print(f"エラーが発生しました。ステータスコード: {response.status_code}")
+            return 10
+    except requests.exceptions.RequestException as e:
+        print("HTTPリクエストエラー:", e)
+        return 10
     
     return 0
     
@@ -212,19 +220,31 @@ while True:
     if time_end - time_sta >= 9:
         break
     
-# ３秒ごとに
+# １ターンの制限時間ごとに
 count_turns_tmp = turns_num
 turn_count = 1
 while count_turns_tmp > 0:
-    b = turns_requests(match_id)
-    count_turns_tmp -= 1
+    if turn_count % 2 == 0:
+        print("相手のターン\n")
+    else:
+        x_time = time.time()
+        b = turns_requests(match_id)
+        count_turns_tmp -= 1
+        
+        # ---- 行動計画更新 ----
+        turns = turn_count # 更新するターン数を決める
+        masons = masons_num
+        type_arr = [0]*masons_num # 職人の総数の行動を配列に入れる
+        dir_arr = [0]*masons_num # 職人の総数の方向を配列に入れる
+        # リクエストを送る
+        c = send_requests(match_id, turns, masons, type_arr, dir_arr)
+        if c == 10:
+            print("-------- Requests Error --------\n\n")
+        elif c == 0:
+            print("-------- Requests Complete --------\n\n")
     
-    # ---- 行動計画更新 ----
-    turns = turn_count # 更新するターン数を決める
-    masons = masons_num
-    send_requests(match_id, turns, masons)
     turn_count += 1
-    time.sleep(turns_seconds - 0.05)
+    time.sleep(turns_seconds-0.01)
     
 print("終わりました。")
     
