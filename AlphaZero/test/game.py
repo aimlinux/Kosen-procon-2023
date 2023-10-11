@@ -322,14 +322,14 @@ class State:
                 #　解体
                         elif n//100000 == 2-self.p:
                             la.append(30+i)
-                    
+
             # リストの要素を枝狩りする
             for ele in la[:]:
                 if ele == 14: # 滞在(14)
                     la.remove(ele)
                 else:
                     continue
-                    
+            print("la : ", la) # 職人ごとの可能な合法手を表示
                 
                     
             las.append(la)
@@ -484,7 +484,7 @@ def mcts_action(state):
 
         # UCB1が最大の子ノードを取得
         def next_child_node(self):
-             # 試行回数nが0の子ノードを返す
+            # 試行回数nが0の子ノードを返す
             for child_node in self.child_nodes:
                 if child_node.n == 0:
                     return child_node
