@@ -288,7 +288,7 @@ class State:
     def legal_actions(self):
         #　合法手を調べる
         las = []
-        ln = 1
+        ln = 1 # 合法手の総数を格納する変数（初期値は1）
 
         #　職人の位置
         shx = [0]*self.shoku 
@@ -298,7 +298,7 @@ class State:
                 shy[i] = self.sh[self.p][i][1]
 
 
-        #　合法手を調べる
+        #　合法手を調べる(1ターンに職人の数だけ繰り返す)
         for j in range(self.shoku):
             la = []
             
@@ -309,7 +309,8 @@ class State:
                 ay = shy[j] + i // 3-1
 
                 #　移動
-                if ax >= 0 and ax < self.w and ay >= 0 and ay < self.w:
+                if ax >= 0 and ax < self.w and ay >= 0 and ay < self.w: # フィールド内にある行動のみに制限
+                    # フィールドのセルが、0, 400, 指定のプレイヤーによって建設された城壁でないことを確認
                     if self.a[0][ay][ax] == 0 or self.a[0][ay][ax] == 400 or (self.a[0][ay][ax]//100000 == (self.p+1) and self.a[0][ay][ax]%100//10 != 3):
                         la.append(10+i)
                     
@@ -317,18 +318,25 @@ class State:
                 #  建築
                 if ax >= 0 and ax < self.w and ay >= 0 and ay < self.w and i % 2 == 1:
                         n = self.a[0][ay][ax]
+                        
                         if n//100 == 0 and n/10 % 10 != 2-self.p:
                             la.append(20+i)
                 #　解体
                         elif n//100000 == 2-self.p:
                             la.append(30+i)
 
-            # リストの要素を枝狩りする
-            for ele in la[:]:
-                if ele == 14: # 滞在(14)
-                    la.remove(ele)
-                else:
-                    continue
+            # print("shx", shx)
+            # print("shy", shy)
+            # # リストの要素を枝狩りする
+            # for ele in la[:]:
+            #     if ele == 14: # 滞在(14)
+            #         la.remove(ele)
+            #     # ---- 自分の陣地を解体するのを枝狩りする ----
+            #     if 1:
+            #         for i in self.shoku:
+                        
+                    
+            # print(ln)
             print("la : ", la) # 職人ごとの可能な合法手を表示
                 
                     
@@ -353,8 +361,6 @@ class State:
                 if n[-1*j-1] == len(las[-1*j-1]):
                     n[-1*j-2] += 1
                     n[-1*j-1] = 0
-            
-            # 滞在、一番恥とか
         
         # 生成されたactionsリストから100~199までの要素を取得し新しいリストとして返す。
         # テスト用らしい

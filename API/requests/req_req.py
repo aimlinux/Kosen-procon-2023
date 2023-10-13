@@ -4,6 +4,7 @@ import requests
 import json
 import logging
 import time
+import gui
 
 
 # -------- logの設定 --------
@@ -214,6 +215,11 @@ board_weight = a[4] # フィールドの幅
 arr_structures = a[5] # 城壁の初期状態 (2次元配列)
 arr_masons = a[6] # 陣地の初期状態 (2次元配列)
 
+arg = [arr_structures, arr_masons, None, None, board_weight]
+# ---------------- 初期状態をGUIに反映 ----------------
+if arg:
+    gui.AppGUI(arg)
+
 # 初期状態を取得してから一定の時間が経過したら１ターン目の情報の取得を開始
 while True:
     time_end = time.time()
@@ -229,6 +235,10 @@ while count_turns_tmp > 0:
     else:
         x_time = time.time()
         b = turns_requests(match_id)
+        arg = [b[2], b[3], b[4], b[5], None]
+# ---------------- GUIを更新する ----------------
+        gui.AppGUI(arg)
+        
         count_turns_tmp -= 1
         
         # ---- 行動計画更新 ----
