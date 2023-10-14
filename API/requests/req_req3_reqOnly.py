@@ -1,12 +1,11 @@
 # HTTP GET & POSTリクエストを使用して競技サーバーにアクセスする。
-# 開始されてから１秒カウントして実行スタート
 
 import requests
 import json
 import logging
 import time
-import tkinter as tk
 # import gui
+#import cpu
 
 
 # -------- logの設定 --------
@@ -30,105 +29,6 @@ sh.setFormatter(formatter)
 #     f_text = f.read()
 # token_text = f_text
 token_text = "abc12345" # テスト用
-
-
-def AppGUI(arg):
-    
-    structures = arg[0]
-    masons = arg[1]
-    walls = arg[2]
-    territories = arg[3]
-    board_weight:int = arg[4]
-    turn_Second = arg[5]
-    print(board_weight)
-    
-    # print(structures)
-    # print("\n\n\n")
-    # print(masons)
-    
-    root = tk.Tk()
-    root.title("GUI")
-    root.geometry(f"1080x720+100+100")
-    root.lift()
-    
-    pw_main = tk.PanedWindow(root, bg="#fff", orient="vertical")
-    pw_main.pack(expand=True, fill=tk.BOTH, side=tk.LEFT)
-    fm_main = tk.Frame(pw_main, bd=5, bg="#fffff2", relief="ridge", borderwidth=10)
-    pw_main.add(fm_main)
-    
-    fm_fields_lower = tk.Frame(fm_main, bd=5, bg="#e6e6fa", relief="ridge", borderwidth=10)
-    fm_fields_lower.pack(side=tk.LEFT, padx=(20, 20), pady=(20, 20))
-    fm_fields = tk.Frame(fm_fields_lower, bg="#e6e6fa")
-    fm_fields.pack(padx=(10, 10), pady=(10, 10))
-    fm_event = tk.Frame(fm_main, bd=5, bg="#e6e6fa", relief="groove", borderwidth=10)
-    fm_event.pack(side=tk.RIGHT, padx=(20, 20), pady=(20, 20))
-    
-    
-    # 1irohaの大きさを設定
-    if board_weight == 25:  iroha_weight = 17
-    elif board_weight >= 21:  iroha_weight = 19
-    elif board_weight >= 17:  iroha_weight = 25
-    elif board_weight >= 15:  iroha_weight = 30
-    elif board_weight >= 13:  iroha_weight = 33
-    elif board_weight >= 11:  iroha_weight = 38
-        
-    # irohaの背景を設定
-    # iroha_bg_list = [0]*board_weight[0]*board_weight
-    iroha_bg_list = [[0 for _ in range(board_weight)] for _ in range(board_weight)] # 毎ターン二次元配列を0で初期化
-    
-    for i in range(0, board_weight) :
-        for j in range(0, board_weight):
-            #print(structures[i][j])
-            # ---- arr_structuresについて ----
-            if structures[i][j] == 1: # 池
-                iroha_bg_list[i][j] = "#111111"
-            elif structures[i][j] == 2: # 城
-                iroha_bg_list[i][j] = "#ffff00"
-            elif structures[i][j] == 0: # 無所属
-                iroha_bg_list[i][j] = "#fff" 
-            
-            # ---- arr_masonsについて ----
-            if masons[i][j] > 0: # 先攻の職人
-                if iroha_bg_list[i][j] == "#fff":
-                    if masons[i][j] == 1: iroha_bg_list[i][j] = "#ff0000" # 赤色
-                    elif masons[i][j] == 2: iroha_bg_list[i][j] = "#ff8080"
-                    elif masons[i][j] == 3: iroha_bg_list[i][j] = "#ffb3b3"
-                    elif masons[i][j] == 4: iroha_bg_list[i][j] = "#e6cfcf"
-            elif masons[i][j] < 0: # 後攻の職人
-                if iroha_bg_list[i][j] == "#fff":
-                    if masons[i][j] == -1: iroha_bg_list[i][j] = "#0000ff" # 青色
-                    elif masons[i][j] == -2: iroha_bg_list[i][j] = "#6666ff"
-                    elif masons[i][j] == -3: iroha_bg_list[i][j] = "#9999ff"
-                    elif masons[i][j] == -4: iroha_bg_list[i][j] = "#ccccff"
-            
-            # ---- arr_wallsについて ----
-            if not walls == None:
-                if walls[i][j] > 0:
-                    iroha_bg_list[i][j] = "#ff80ea"
-                elif walls[i][j] < 0:
-                    iroha_bg_list[i][j] = "#80ff95"
-            # "行動タイプです。\\\n0: 滞在, 1: 移動, 2: 建築, 3: 解体",
-            # "競技ボードの左上を (1,1) とする座標系における方向です。\\\n0: 無方向, 1: 左上, 2: 上, 3: 右上, 4: 右, 5: 右下, 6: 下, 7: 左下, 8: 左",
-
-
-    # for i in range(0, board_weight):
-    #     for i in range(0, board_weight):
-    #         if iroha_bg_list[i][j] == 0:
-    #             iroha_bg_list[i][j] = "#fff" # 何も構造物がないマスは白色で初期化
-    
-    # -------- 二次元配列でフィールドを表示
-    for i in range(0, board_weight):
-        for j in range(0, board_weight):
-            hon = tk.Frame(fm_fields, bd=2, bg=iroha_bg_list[i][j], height=iroha_weight, width=iroha_weight+10)
-            hon.grid(column=i, row=j, padx=7, pady=7)
-        
-        
-    
-    root.after(turn_Second*100 - 100, root.destroy)
-        
-    root.mainloop()
-    
-
 
 
 # 初期状態の情報を取得 (デフォルトではサーバーを起動して10秒以内にアクセス)
@@ -303,6 +203,8 @@ def send_requests(matches_id, turns, masons, type_arr, dir_arr):
 
 
 a = initial_requests()
+# env=envi(a) # 初期状態をクラスに渡す
+
 if a:
     # 時間カウントをスタートする
     time_sta = time.time()
@@ -315,10 +217,10 @@ board_weight = a[4] # フィールドの幅
 arr_structures = a[5] # 城壁の初期状態 (2次元配列)
 arr_masons = a[6] # 陣地の初期状態 (2次元配列)
 
-arg = [arr_structures, arr_masons, None, None, board_weight, turns_seconds]
+arg = [arr_structures, arr_masons, None, None, board_weight]
 # ---------------- 初期状態をGUIに反映 ----------------
-if arg:
-    AppGUI(arg)
+# if arg:
+#     gui.AppGUI(arg)
 
 # 初期状態を取得してから一定の時間が経過したら１ターン目の情報の取得を開始
 while True:
@@ -334,30 +236,48 @@ while count_turns_tmp > 0:
         print("相手のターン\n")
     else:
         x_time = time.time()
+        action = input("action=")
+        action = [int(action.split()[i]) for i in range(masons_num)]
         b = turns_requests(match_id)
-        arg = [b[2], b[3], b[4], b[5], board_weight, turns_seconds]
-        # ---------------- GUIを更新する ----------------
-        AppGUI(arg)
+
+        #cpu--
+        #d,e = main_cpu(b)
+        #--cpu
+        arg = [b[2], b[3], b[4], b[5], None]
+# ---------------- GUIを更新する ----------------
+        # gui.AppGUI(arg)
         
         count_turns_tmp -= 1
         
         # ---- 行動計画更新 ----
-        turns = turn_count # 更新するターン数を決める
+        # turns = turn_count # 
+        turns = b[1] + 1
+        print(b[1])
         masons = masons_num
         type_arr = [0]*masons_num # 職人の総数の行動を配列に入れる
         dir_arr = [0]*masons_num # 職人の総数の方向を配列に入れる
-        
-        
-        
+        # type_arr = d
+        # dir_arr = e
         # リクエストを送る
-        c = send_requests(match_id, turns, masons, type_arr, dir_arr)
-        if c == 10:
-            print("-------- Requests Error --------\n\n")
-        elif c == 0:
-            print("-------- Requests Complete --------\n\n")
+        # c = send_requests(match_id, turns, masons, type_arr, dir_arr)
+        # if c == 10:
+        #     print("-------- Requests Error --------\n\n")
+        # elif c == 0:
+        #     print("-------- Requests Complete --------\n\n")
     
-    turn_count += 1
-    #time.sleep(turns_seconds-0.01)
+        type_arr = [0]*masons_num # 職人の総数の行動を配列に入れる
+        dir_arr = [0]*masons_num # 職人の総数の方向を配列に入れる
+        type_arr = [action[i]//10 for i in range(masons_num)]
+        dir_arr = [action[i] % 10 for i in range(masons_num)]
+        c = send_requests(match_id, turns, masons, type_arr, dir_arr)
+    
+        if time.time() - x_time == 9:
+            print("-------- ターン終了 --------")
+            pass
+
+        
+
+
     
 print("終わりました。")
     

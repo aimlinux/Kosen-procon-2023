@@ -6,7 +6,7 @@ match_id = 10  # 例として試合IDを設定
 token = "abc12345"  # トークンを設定
 
 # APIエンドポイントとヘッダーを設定
-url = f"http://localhost:3000/matches/{match_id}"
+url = f"http://172.28.0.1:8080/matches/{match_id}"
 
 # ヘッダーを設定
 headers = {
