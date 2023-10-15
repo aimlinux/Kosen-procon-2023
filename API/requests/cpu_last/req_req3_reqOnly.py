@@ -184,10 +184,10 @@ def send_requests(matches_id, turns, masons, type_arr, dir_arr):
         "actions": actions_arr
     }
     
-    url = f"http://{url}/matches/{match_id}" # テスト用
+    aaa = f"http://{url}/matches/{match_id}" # テスト用
     try:
         # APIリクエストを送信
-        response = requests.post(url, json=request_body, params=query_params, headers=headers)
+        response = requests.post(aaa, json=request_body, params=query_params, headers=headers)
         # レスポンスを処理
         if response.status_code == 200:
             response_data = response.json()
@@ -228,21 +228,21 @@ arg = [arr_structures, arr_masons, None, None, board_weight]
 # 初期状態を取得してから一定の時間が経過したら１ターン目の情報の取得を開始
 while True:
     time_end = time.time()
-    if time_end - time_sta >= 9:
+    if time_end - time_sta >= 1:
         break
     
 # １ターンの制限時間ごとに
 count_turns_tmp = turns_num
 turn_count = 1
 while count_turns_tmp > 0:
-    if turn_count % 2 == 1:
+    if turn_count % 2 == 0:
         print("相手のターン\n")
     else:
         x_time = time.time()
         action = input("action=")
         action = [int(action.split()[i]) for i in range(masons_num)]
         b = turns_requests(match_id)
-
+#
         #cpu--
         #d,e = main_cpu(b)
         #--cpu
