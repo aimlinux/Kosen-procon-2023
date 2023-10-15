@@ -109,7 +109,7 @@ def turns_requests(matches_id):
         else:
             print(f"エラーが発生しました。（status_code : {response.status_code}）")
     except requests.exceptions.RequestException as e:
-        print("HTTPリクエストエラー:", e)
+        print("HTTPリクエストエラー:", e) 
         
     if field_data:
         # -------- 試合情報の取得 --------
