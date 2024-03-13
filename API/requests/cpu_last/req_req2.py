@@ -90,7 +90,7 @@ def initial_requests():
     arr_masons = []  # 初期化
     try:
         # サーバーから試合状態を取得
-        response = requests.get(f"http://192.168.11.32:8080/matches?token=3") # テスト用（初期状態を取得）
+        response = requests.get(f"http://192.168.11.32:8080/matches?token={token_text}") # テスト用（初期状態を取得）
         if response.status_code == 200 or response.status_code == 201 or response.status_code == 404: # 正常なstatus_codeは[200]
             field_data = response.json()
             print(f"試合の初期状態を取得しました。（status_code : {response.status_code}）")
@@ -144,7 +144,7 @@ def turns_requests(matches_id):
     field_data = None # 初期化
     try:
         # サーバーから試合状態を取得
-        response = requests.get(f"http://192.168.11.32:8080/matches/{matches_id}?token=3") # テスト（1ターン目以降の情報を取得）
+        response = requests.get(f"http://192.168.11.32:8080/matches/{matches_id}?token={token_text}") # テスト（1ターン目以降の情報を取得）
         if response.status_code == 200 or response.status_code == 201 or response.status_code == 404: # 正常なstatus_codeは[200]
             field_data = response.json()
             print(f"試合の状態を取得しました。（status_code : {response.status_code}）")

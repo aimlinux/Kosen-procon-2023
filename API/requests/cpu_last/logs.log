@@ -234,3 +234,7 @@
 2024-03-13 17:52:20,773 --- message : match_id : 41,  turns_num : 30,  turns_seconds : 3,  masons_num : 4,  board_weight : 11
 2024-03-13 17:53:19,667 --- message : Match has started, Get initial states
 2024-03-13 17:53:19,667 --- message : match_id : 41,  turns_num : 30,  turns_seconds : 3,  masons_num : 4,  board_weight : 11
+2024-03-13 17:59:05,747 --- message : Match has started, Get initial states
+2024-03-13 17:59:05,747 --- message : match_id : 41,  turns_num : 30,  turns_seconds : 3,  masons_num : 4,  board_weight : 11
+2024-03-13 18:00:11,486 --- message : Match has started, Get initial states
+2024-03-13 18:00:11,486 --- message : match_id : 41,  turns_num : 30,  turns_seconds : 3,  masons_num : 4,  board_weight : 11
