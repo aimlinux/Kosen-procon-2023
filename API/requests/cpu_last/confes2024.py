@@ -5,7 +5,7 @@ import json
 import logging
 import time
 # import gui
-import cpu
+#import cpu
 
 
 # -------- logの設定 --------
@@ -30,52 +30,9 @@ sh.setFormatter(formatter)
 # token_text = f_text
 token_text = "313" # テスト用
 # token_text = "abc12345"
-# url = "localhost:8000"
-class envi():#sh,cpu_a,turn,
-    def __init__(self, a):
-        self.f="B13"
-        self.cp=1
-        self.p=0
-        
-        self.maxturn=a[1]
-        self.shoku=a[3]
-        self.h=self.w=a[4]
-
-        self.cpu_1=[[0,0] for i in range(self.shoku)]
-        self.a=[[[0 for i in range(self.w)] for j in range(self.h)] for k in range(3)]
-        self.sh=[[[0,0] for i in range(self.shoku)]]
-        self.cpu_a=[[0]*self.w for i in range(self.h)]
-        self.c=[4,4,4,4,4,4]
-    def set(self, b):
-        self.turn=self.maxturn-b[1]
-        for i in range(self.w):
-            for j in range(self.h):
-                self.a[0][j][i]=(b[2][j][i]*170-140)*b[2][j][i] +(abs(b[3][j][i])+(b[3][j][i]<0)*10+9)*(b[3][j][i]!=0) +b[4][j][i]*100000
-                self.a[1][j][i]=(b[4][j][i]==1)*10 +(b[5][j][i]==1)*5
-                self.a[2][j][i]=(b[4][j][i]==2)*10 +(b[5][j][i]==2)*5
-                if b[3][j][i]>0:
-                    self.sh[0][b[3][j][i]-1]=[i,j]
-
-
-
-def main_cpu(b):
-    env.set(b)
-    act=[0]*env.shoku
-    bec=[0]*env.shoku
-    bect=[0]*env.shoku
-    for i in range(env.shoku):
-        env.cp=env.c[i]
-        act[i],bec[i]=cpu.cpu(env,i)
-        env.cpu_a[env.sh[env.p][i][1]+bec[i] // 3-1][env.sh[env.p][i][0]+bec[i] % 3-1]=act[i]*1000+env.turn*10000+env.p+1
-        if bec[i]<3:
-            bect[i]=bec[i]+1
-        elif bec[i]>5:
-            bect[i]=13-bec[i]
-        else:
-            bect[i]=14-bec[i]*2
-    print(env.a)
-    return act,bect
-
+# urlrl=""
+url = "192.168.11.32:8080"
+                    
 
 # 初期状態の情報を取得 (デフォルトではサーバーを起動して10秒以内にアクセス)
 def initial_requests():
@@ -152,7 +109,7 @@ def turns_requests(matches_id):
         else:
             print(f"エラーが発生しました。（status_code : {response.status_code}）")
     except requests.exceptions.RequestException as e:
-        print("HTTPリクエストエラー:", e)
+        print("HTTPリクエストエラー:", e) 
         
     if field_data:
         # -------- 試合情報の取得 --------
@@ -227,10 +184,10 @@ def send_requests(matches_id, turns, masons, type_arr, dir_arr):
         "actions": actions_arr
     }
     
-    url = f"http://192.168.11.32:8080/matches/{match_id}" # テスト用
+    aaa = f"http://192.168.11.32:8080/matches/{match_id}" # テスト用
     try:
         # APIリクエストを送信
-        response = requests.post(url, json=request_body, params=query_params, headers=headers)
+        response = requests.post(aaa, json=request_body, params=query_params, headers=headers)
         # レスポンスを処理
         if response.status_code == 200:
             response_data = response.json()
@@ -249,7 +206,7 @@ def send_requests(matches_id, turns, masons, type_arr, dir_arr):
 
 
 a = initial_requests()
-env=envi(a) # 初期状態をクラスに渡す
+# env=envi(a) # 初期状態をクラスに渡す
 
 if a:
     # 時間カウントをスタートする
@@ -278,15 +235,16 @@ while True:
 count_turns_tmp = turns_num
 turn_count = 1
 while count_turns_tmp > 0:
-    if turn_count % 2 == 1:
+    if turn_count % 2 == 0:
         print("相手のターン\n")
     else:
         x_time = time.time()
+        action = input("action=")
+        action = [int(action.split()[i]) for i in range(masons_num)]
         b = turns_requests(match_id)
-        #print(b[4])
-
+#
         #cpu--
-        d,e = main_cpu(b)
+        #d,e = main_cpu(b)
         #--cpu
         arg = [b[2], b[3], b[4], b[5], None]
 # ---------------- GUIを更新する ----------------
@@ -295,21 +253,34 @@ while count_turns_tmp > 0:
         count_turns_tmp -= 1
         
         # ---- 行動計画更新 ----
-        turns = b[1]+1 # 更新するターン数を決める
+        # turns = turn_count # 
+        turns = b[1] + 1
+        print(b[1])
         masons = masons_num
         type_arr = [0]*masons_num # 職人の総数の行動を配列に入れる
         dir_arr = [0]*masons_num # 職人の総数の方向を配列に入れる
-        type_arr = d
-        dir_arr = e
+        # type_arr = d
+        # dir_arr = e
         # リクエストを送る
-        c = send_requests(match_id, turns, masons, type_arr, dir_arr)
-        if c == 10:
-            print("-------- Requests Error --------\n\n")
-        elif c == 0:
-            print("-------- Requests Complete --------\n\n")
+        # c = send_requests(match_id, turns, masons, type_arr, dir_arr)
+        # if c == 10:
+        #     print("-------- Requests Error --------\n\n")
+        # elif c == 0:
+        #     print("-------- Requests Complete --------\n\n")
     
-    turn_count += 1
-    time.sleep(turns_seconds-0.01)
+        type_arr = [0]*masons_num # 職人の総数の行動を配列に入れる
+        dir_arr = [0]*masons_num # 職人の総数の方向を配列に入れる
+        type_arr = [action[i]//10 for i in range(masons_num)]
+        dir_arr = [action[i] % 10 for i in range(masons_num)]
+        c = send_requests(match_id, turns, masons, type_arr, dir_arr)
+    
+        if time.time() - x_time == 9:
+            print("-------- ターン終了 --------")
+            pass
+
+        
+
+
     
 print("終わりました。")
     
