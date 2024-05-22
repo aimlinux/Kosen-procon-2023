@@ -28,7 +28,7 @@ sh.setFormatter(formatter)
 # with open(token_file, encoding="UTF-8") as f:
 #     f_text = f.read()
 # token_text = f_text
-token_text = "3" # テスト用
+token_text = "ito" # テスト用
 # token_text = "abc12345"
 # url = "localhost:8000"
 class envi():#sh,cpu_a,turn,
@@ -45,7 +45,7 @@ class envi():#sh,cpu_a,turn,
         self.a=[[[0 for i in range(self.w)] for j in range(self.h)] for k in range(3)]
         self.sh=[[[0,0] for i in range(self.shoku)]]
         self.cpu_a=[[0]*self.w for i in range(self.h)]
-        self.c=[4,4,4,4,4,4]
+        self.c=[1,2,2,2,1,1]
     def set(self, b):
         self.turn=self.maxturn-b[1]
         for i in range(self.w):
@@ -276,7 +276,7 @@ while True:
     
 # １ターンの制限時間ごとに
 count_turns_tmp = turns_num
-turn_count = 1
+turn_count = 0
 while count_turns_tmp > 0:
     if turn_count % 2 == 1:
         print("相手のターン\n")
